@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.xapp.jjh.xplayer.MainActivity">
+
+    <com.xapp.jjh.base_ijk.XPlayer
+        android:id="@+id/player"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_start"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:background="#cccccc"
+                android:gravity="center"
+                android:textSize="15sp"
+                android:textColor="#000000"
+                android:text="start"
+                android:padding="10dp"/>
+
+            <TextView
+                android:id="@+id/tv_pause"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:background="#cccccc"
+                android:gravity="center"
+                android:layout_marginTop="10dp"
+                android:textSize="15sp"
+                android:textColor="#000000"
+                android:text="pause"
+                android:padding="10dp"/>
+
+            <TextView
+                android:id="@+id/tv_resume"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:background="#cccccc"
+                android:gravity="center"
+                android:layout_marginTop="10dp"
+                android:textSize="15sp"
+                android:textColor="#000000"
+                android:text="resume"
+                android:padding="10dp"/>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
