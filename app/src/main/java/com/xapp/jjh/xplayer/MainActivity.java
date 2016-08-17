@@ -36,7 +36,8 @@ public class MainActivity extends AppCompatActivity implements OnPreparedListene
         tv_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mVideoPlayer.play("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4");
+//                mVideoPlayer.play("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4");
+                mVideoPlayer.play("http://172.16.218.64:8080/lvyexianzong.mkv");
                 mVideoPlayer.setLoadingState(true);
             }
         });

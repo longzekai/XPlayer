@@ -36,6 +36,7 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
     private int mMaxVolume;
 
     private final int MSG_HIDDEN_SLIDE_CONTROL = 10001;
+    private final int MSG_SLIDE_SEEK = 10002;
 
     private Handler mHandler = new Handler(){
         @Override
@@ -46,6 +47,13 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
                     setVolumeState(false);
                     setLightState(false);
                     setFastForwardState(false);
+                    break;
+
+                case MSG_SLIDE_SEEK:
+                    if(newPosition > 0){
+                        seekTo((int) newPosition);
+                        newPosition = -1;
+                    }
                     break;
             }
         }
@@ -133,6 +141,9 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
         volume = -1;
         brightness = -1f;
         mHandler.sendEmptyMessageDelayed(MSG_HIDDEN_SLIDE_CONTROL,500);
+        if(newPosition > 0){
+            mHandler.sendEmptyMessage(MSG_SLIDE_SEEK);
+        }
     }
 
     public class PlayerGestureListener extends GestureDetector.SimpleOnGestureListener {

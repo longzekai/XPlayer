@@ -59,7 +59,6 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
 
     private int mStatus = STATUS_IDLE;
     private String mUrl;
-    private int mCurrentPosition;
     protected int mWidthPixels;
     protected int mHeightPixels;
     private OrientationEventListener orientationEventListener;
@@ -487,18 +486,14 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
     @Override
     public void pause() {
         if(mVideoView!=null){
-            mStatus = STATUS_PAUSE;
             mVideoView.pause();
-            mCurrentPosition = mVideoView.getCurrentPosition();
+            mStatus = STATUS_PAUSE;
         }
     }
 
     @Override
     public void resume() {
         if(mVideoView!=null && mStatus == STATUS_PAUSE){
-            if(mCurrentPosition > 0){
-                mVideoView.seekTo(mCurrentPosition);
-            }
             mVideoView.start();
             mStatus = STATUS_PLAYING;
         }
