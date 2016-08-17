@@ -209,6 +209,7 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
         mVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(IMediaPlayer mp) {
+                onPlayComplete();
                 statusChange(STATUS_COMPLETED);
                 if(mOnCompletionListener!=null){
                     mOnCompletionListener.onCompletion();
@@ -220,12 +221,14 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
             public boolean onInfo(IMediaPlayer mp, int what, int extra) {
                 switch (what) {
                     case IMediaPlayer.MEDIA_INFO_BUFFERING_START:
+                        onBufferingStart();
                         statusChange(STATUS_LOADING);
                         if(mOnPlayerInfoListener!=null){
                             mOnPlayerInfoListener.onBufferingStart();
                         }
                         break;
                     case IMediaPlayer.MEDIA_INFO_BUFFERING_END:
+                        onBufferingEnd();
                         statusChange(STATUS_PLAYING);
                         if(mOnPlayerInfoListener!=null){
                             mOnPlayerInfoListener.onBufferingEnd();
@@ -237,6 +240,7 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
 //                        System.out.println("download_speed : " + extra);
                         break;
                     case IMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
+                        onRenderStart();
                         statusChange(STATUS_PLAYING);
                         if(mOnPlayerInfoListener!=null){
                             mOnPlayerInfoListener.onRenderStart();
@@ -252,6 +256,7 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
         mVideoView.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(IMediaPlayer mp, int what, int extra) {
+                onPlayError();
                 statusChange(STATUS_ERROR);
                 if(mOnErrorListener!=null){
                     mOnErrorListener.onError(what, extra);
@@ -262,12 +267,37 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
         mVideoView.setOnPreparedListener(new IMediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(IMediaPlayer mp) {
+                onPlayerPrepared();
                 preparedMediaPlayer(mp);
                 if(mOnPreparedListener!=null){
                     mOnPreparedListener.onPrepared();
                 }
             }
         });
+    }
+
+    protected void onPlayComplete() {
+
+    }
+
+    protected void onPlayerPrepared() {
+
+    }
+
+    protected void onPlayError() {
+
+    }
+
+    protected void onBufferingStart() {
+
+    }
+
+    protected void onBufferingEnd() {
+
+    }
+
+    protected void onRenderStart() {
+
     }
 
     private void preparedMediaPlayer(IMediaPlayer mediaPlayer) {
@@ -488,7 +518,12 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
         if(mVideoView!=null){
             mVideoView.pause();
             mStatus = STATUS_PAUSE;
+            onPaused();
         }
+    }
+
+    protected void onPaused() {
+
     }
 
     @Override
@@ -496,7 +531,12 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
         if(mVideoView!=null && mStatus == STATUS_PAUSE){
             mVideoView.start();
             mStatus = STATUS_PLAYING;
+            onResumed();
         }
+    }
+
+    protected void onResumed() {
+
     }
 
     @Override

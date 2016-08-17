@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import com.xapp.jjh.base_ijk.inter.IExtendHandle;
 import com.xapp.jjh.base_ijk.listener.OnSlideHandleListener;
@@ -35,14 +36,29 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
     private AudioManager audioManager;
     private int mMaxVolume;
 
+    private View mPlayControl;
+    private SeekBar mSeekBar;
+    private ImageView iv_play_state;
+    private TextView tv_time;
+
+    private final long MSC_TIME_DELAY = 5000;
+
+    private final int MSG_PLAYING = 10000;
     private final int MSG_HIDDEN_SLIDE_CONTROL = 10001;
     private final int MSG_SLIDE_SEEK = 10002;
+    private final int MSG_DELAY_HIDDEN_PLAY_CONTROL = 10003;
 
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what){
+                case MSG_PLAYING:
+                    updateSeekBarProgress(getCurrentPosition());
+                    updateTime(getCurrentPosition(),getDuration());
+                    mHandler.sendEmptyMessageDelayed(MSG_PLAYING,1000);
+                    break;
+
                 case MSG_HIDDEN_SLIDE_CONTROL:
                     setVolumeState(false);
                     setLightState(false);
@@ -54,6 +70,10 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
                         seekTo((int) newPosition);
                         newPosition = -1;
                     }
+                    break;
+
+                case MSG_DELAY_HIDDEN_PLAY_CONTROL:
+                    setPlayControlState(false);
                     break;
             }
         }
@@ -81,6 +101,85 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
         initManager();
         addTouchLayout();
         updateGestureDetector();
+    }
+
+    public void useDefaultPlayControl(){
+        if(mPlayControl!=null)
+            return;
+        View controller = View.inflate(getContext(),R.layout.layout_play_control,null);
+        controller.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+        mPlayControl = controller.findViewById(R.id.ll_play_control);
+        iv_play_state = (ImageView) controller.findViewById(R.id.iv_play_state);
+        mSeekBar = (SeekBar) controller.findViewById(R.id.seek_bar);
+        tv_time = (TextView) controller.findViewById(R.id.tv_time);
+        addView(controller);
+        setPlayControlListener();
+    }
+
+    private void setPlayControlListener() {
+        iv_play_state.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isPlaying()){
+                    pause();
+                }else{
+                    resume();
+                }
+            }
+        });
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(fromUser){
+                    updateTime(progress,seekBar.getMax());
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int progress = seekBar.getProgress();
+                seekTo(progress);
+            }
+        });
+    }
+
+    private void updateSeekBarProgress(long progress){
+        if(mSeekBar!=null){
+            mSeekBar.setProgress((int) progress);
+        }
+    }
+
+    @Override
+    protected void onRenderStart() {
+        super.onRenderStart();
+        setPlayStateIcon(true);
+        if(mSeekBar!=null){
+            mSeekBar.setMax(getDuration());
+        }
+        mHandler.sendEmptyMessageDelayed(MSG_PLAYING,1000);
+    }
+
+    @Override
+    protected void onPaused() {
+        super.onPaused();
+        setPlayStateIcon(false);
+    }
+
+    @Override
+    protected void onResumed() {
+        super.onResumed();
+        setPlayStateIcon(true);
+    }
+
+    @Override
+    protected void onPlayComplete() {
+        super.onPlayComplete();
+        mHandler.removeMessages(MSG_PLAYING);
     }
 
     private void initManager() {
@@ -198,9 +297,49 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-
+            togglePlayControlState();
             return true;
         }
+    }
+
+    private void setPlayStateIcon(boolean playing){
+        if(iv_play_state!=null){
+            iv_play_state.setImageResource(playing?R.mipmap.ic_video_player_btn_pause:R.mipmap.ic_video_player_btn_play);
+        }
+    }
+
+    private void updateTime(long curr, long total){
+        if(tv_time!=null){
+            tv_time.setText(String.format("%s/%s",TimeUtil.getTime(curr),TimeUtil.getTime(total)));
+        }
+    }
+
+    public void togglePlayControlState(){
+        if(mPlayControl!=null){
+            int visibility = mPlayControl.getVisibility();
+            if(visibility == View.VISIBLE){
+                setPlayControlState(false);
+            }else{
+                setPlayControlState(true);
+                mHandler.removeMessages(MSG_DELAY_HIDDEN_PLAY_CONTROL);
+                mHandler.sendEmptyMessageDelayed(MSG_DELAY_HIDDEN_PLAY_CONTROL,MSC_TIME_DELAY);
+            }
+        }
+    }
+
+    public void setPlayControlState(boolean visible){
+        if(mPlayControl!=null){
+            mPlayControl.setVisibility(visible?View.VISIBLE:View.GONE);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        mHandler.removeMessages(MSG_PLAYING);
+        mHandler.removeMessages(MSG_SLIDE_SEEK);
+        mHandler.removeMessages(MSG_HIDDEN_SLIDE_CONTROL);
+        mHandler.removeMessages(MSG_DELAY_HIDDEN_PLAY_CONTROL);
+        super.onDestroy();
     }
 
     private void onHorizontalProgressSlide(float percent) {
@@ -253,7 +392,7 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
             s = "OFF";
         }
         // 显示
-        setVolumeIcon(i==0?R.drawable.ic_volume_off_white_36dp:R.drawable.ic_volume_up_white_36dp);
+        setVolumeIcon(i==0?R.mipmap.ic_volume_off_white_36dp:R.mipmap.ic_volume_up_white_36dp);
         setLightState(false);
         setFastForwardState(false);
         setVolumeState(true);

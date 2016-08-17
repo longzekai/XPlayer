@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/ic_volume_up_white_36dp"/>
+            android:src="@mipmap/ic_volume_up_white_36dp"/>
 
         <TextView
             android:id="@+id/app_video_volume"
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/ic_brightness_6_white_36dp"/>
+            android:src="@mipmap/ic_brightness_6_white_36dp"/>
 
         <TextView
             android:id="@+id/app_video_brightness"
