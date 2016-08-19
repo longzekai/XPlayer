@@ -1,6 +1,9 @@
 package com.xapp.jjh.base_ijk;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
@@ -85,6 +88,8 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
     };
     private TextView tv_system_time;
     private RelativeLayout rl_status_bar;
+    private TextView tv_battery;
+    private BatteryReceiver batteryReceiver;
 
     public XPlayer(Context context) {
         super(context);
@@ -122,8 +127,25 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
         tv_time = (TextView) controller.findViewById(R.id.tv_time);
         rl_status_bar = (RelativeLayout) controller.findViewById(R.id.rl_status_bar);
         tv_system_time = (TextView) controller.findViewById(R.id.tv_system_time);
+        tv_battery = (TextView) controller.findViewById(R.id.tv_battery);
         addView(controller);
         setPlayControlListener();
+        if(this.showStatusBar){
+            IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+            batteryReceiver = new BatteryReceiver();
+            getContext().registerReceiver(batteryReceiver, intentFilter);
+        }
+    }
+
+    private class BatteryReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(Intent.ACTION_BATTERY_CHANGED.equals(intent.getAction())){
+                int level = intent.getIntExtra("level", 0);
+                int scale = intent.getIntExtra("scale", 100);
+                tv_battery.setText("电量 "+((level*100)/scale)+"%");
+            }
+        }
     }
 
     private void setPlayControlListener() {
@@ -382,6 +404,9 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
         mHandler.removeMessages(MSG_SLIDE_SEEK);
         mHandler.removeMessages(MSG_HIDDEN_SLIDE_CONTROL);
         mHandler.removeMessages(MSG_DELAY_HIDDEN_PLAY_CONTROL);
+        if(batteryReceiver!=null){
+            getContext().unregisterReceiver(batteryReceiver);
+        }
         super.onDestroy();
     }
 
