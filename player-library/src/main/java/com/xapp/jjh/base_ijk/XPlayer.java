@@ -10,9 +10,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.xapp.jjh.base_ijk.inter.IExtendHandle;
+import com.xapp.jjh.base_ijk.listener.OnScreenChangeListener;
 import com.xapp.jjh.base_ijk.listener.OnSlideHandleListener;
 import com.xapp.jjh.base_ijk.utils.TimeUtil;
 import com.xapp.jjh.base_ijk.widget.VideoPlayer;
@@ -40,6 +42,8 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
     private SeekBar mSeekBar;
     private ImageView iv_play_state;
     private TextView tv_time;
+
+    private boolean showStatusBar;
 
     private final long MSC_TIME_DELAY = 5000;
 
@@ -74,10 +78,13 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
 
                 case MSG_DELAY_HIDDEN_PLAY_CONTROL:
                     setPlayControlState(false);
+                    setStatusBarState(false);
                     break;
             }
         }
     };
+    private TextView tv_system_time;
+    private RelativeLayout rl_status_bar;
 
     public XPlayer(Context context) {
         super(context);
@@ -103,15 +110,18 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
         updateGestureDetector();
     }
 
-    public void useDefaultPlayControl(){
+    public void useDefaultPlayControl(boolean showStatusBar){
         if(mPlayControl!=null)
             return;
+        this.showStatusBar = showStatusBar;
         View controller = View.inflate(getContext(),R.layout.layout_play_control,null);
         controller.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
         mPlayControl = controller.findViewById(R.id.ll_play_control);
         iv_play_state = (ImageView) controller.findViewById(R.id.iv_play_state);
         mSeekBar = (SeekBar) controller.findViewById(R.id.seek_bar);
         tv_time = (TextView) controller.findViewById(R.id.tv_time);
+        rl_status_bar = (RelativeLayout) controller.findViewById(R.id.rl_status_bar);
+        tv_system_time = (TextView) controller.findViewById(R.id.tv_system_time);
         addView(controller);
         setPlayControlListener();
     }
@@ -144,6 +154,27 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
                 seekTo(progress);
+            }
+        });
+        setOnScreenChangeListener(new OnScreenChangeListener() {
+            @Override
+            public void onLandScape() {
+
+            }
+
+            @Override
+            public void onPortrait() {
+
+            }
+
+            @Override
+            public void onFullScreen() {
+
+            }
+
+            @Override
+            public void onQuitFullScreen() {
+                setStatusBarState(false);
             }
         });
     }
@@ -330,7 +361,19 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
     public void setPlayControlState(boolean visible){
         if(mPlayControl!=null){
             mPlayControl.setVisibility(visible?View.VISIBLE:View.GONE);
+            toggleStatusBarState(visible);
         }
+    }
+
+    private void toggleStatusBarState(boolean visible) {
+        if(showStatusBar && isFullScreen){
+            tv_system_time.setText(TimeUtil.getNowTime());
+            setStatusBarState(visible);
+        }
+    }
+
+    private void setStatusBarState(boolean visible) {
+        rl_status_bar.setVisibility(visible? View.VISIBLE:View.GONE);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.xapp.jjh.base_ijk.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * ------------------------------------
  * Created by Taurus on 2016/8/3.
@@ -17,6 +20,11 @@ public class TimeUtil {
         int minutes = (totalSeconds / 60) % 60;
         int hours = totalSeconds / 3600;
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
+
+    public static String getNowTime(){
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+        return format.format(new Date());
     }
 
 }

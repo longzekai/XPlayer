@@ -3,6 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/rl_status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#44000000"
+        android:visibility="gone"
+        android:layout_alignParentTop="true">
+        <TextView
+            android:id="@+id/tv_system_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:text=""
+            android:textColor="#ffffff"/>
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/ll_play_control"
         android:layout_width="match_parent"

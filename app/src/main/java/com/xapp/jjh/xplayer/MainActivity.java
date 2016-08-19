@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements OnPreparedListene
     private void initPlayer() {
         mVideoPlayer.setDecodeMode(DecodeMode.SOFT);
         mVideoPlayer.setViewType(ViewType.SURFACEVIEW);
-        mVideoPlayer.useDefaultPlayControl();
+        mVideoPlayer.useDefaultPlayControl(true);
         mVideoPlayer.setOnPreparedListener(this);
         mVideoPlayer.setOnPlayerInfoListener(this);
         mVideoPlayer.setOnErrorListener(this);

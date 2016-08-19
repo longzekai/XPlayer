@@ -1,5 +1,6 @@
 package com.xapp.jjh.base_ijk.widget;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -17,7 +18,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.Surface;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import com.xapp.jjh.base_ijk.bean.VideoPlayingInfo;
@@ -29,6 +32,7 @@ import com.xapp.jjh.base_ijk.listener.OnCompletionListener;
 import com.xapp.jjh.base_ijk.listener.OnErrorListener;
 import com.xapp.jjh.base_ijk.listener.OnPlayInfoListener;
 import com.xapp.jjh.base_ijk.listener.OnPreparedListener;
+import com.xapp.jjh.base_ijk.listener.OnScreenChangeListener;
 import com.xapp.jjh.base_ijk.listener.OnSeekCompleteListener;
 import tv.danmaku.ijk.media.player.AndroidMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
@@ -40,7 +44,7 @@ import tv.danmaku.ijk.media.player.MediaPlayerProxy;
  * Created by Taurus on 2016/8/2.
  * ------------------------------------
  */
-public class VideoPlayer extends FrameLayout implements IVideoPlayer{
+public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeObserver.OnGlobalLayoutListener {
 
     private String TAG = "VideoPlayer";
     private IjkVideoView mVideoView;
@@ -53,6 +57,7 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
     private OnCompletionListener mOnCompletionListener;
     private OnErrorListener mOnErrorListener;
     private OnSeekCompleteListener mOnSeekCompleteListener;
+    private OnScreenChangeListener mOnScreenChangeListener;
 
     private DecodeMode mDecodeMode = DecodeMode.SOFT;
     private ViewType mViewType = ViewType.SURFACEVIEW;
@@ -63,6 +68,7 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
     protected int mHeightPixels;
     private OrientationEventListener orientationEventListener;
     private boolean portrait;
+    protected boolean isFullScreen;
 
     public VideoPlayer(Context context) {
         super(context);
@@ -103,6 +109,10 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
 
     public void setOnSeekCompleteListener(OnSeekCompleteListener mOnSeekCompleteListener) {
         this.mOnSeekCompleteListener = mOnSeekCompleteListener;
+    }
+
+    public void setOnScreenChangeListener(OnScreenChangeListener mOnScreenChangeListener) {
+        this.mOnScreenChangeListener = mOnScreenChangeListener;
     }
 
     public DecodeMode getDecodeMode() {
@@ -340,6 +350,13 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
 
     public void doConfigChange(Configuration newConfig){
         portrait = newConfig.orientation == Configuration.ORIENTATION_PORTRAIT;
+        if(mOnScreenChangeListener!=null){
+            if(portrait){
+                mOnScreenChangeListener.onPortrait();
+            }else {
+                mOnScreenChangeListener.onLandScape();
+            }
+        }
         if(mVideoView!=null){
             new Handler().post(new Runnable() {
                 @Override
@@ -424,6 +441,7 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
     }
 
     private void tryFullScreen(boolean fullScreen) {
+        removeContentViewLayoutListener();
         if (mActivity instanceof AppCompatActivity) {
             ActionBar supportActionBar = ((AppCompatActivity) mActivity).getSupportActionBar();
             if (supportActionBar != null) {
@@ -439,7 +457,9 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
 
     private void setFullScreen(boolean fullScreen) {
         if (mActivity != null) {
+            isFullScreen = fullScreen;
             WindowManager.LayoutParams attrs = mActivity.getWindow().getAttributes();
+            handleFullScreenListener(fullScreen);
             if (fullScreen) {
                 attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
                 mActivity.getWindow().setAttributes(attrs);
@@ -453,16 +473,56 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer{
 
     }
 
+    private void handleFullScreenListener(boolean fullScreen) {
+        if(mOnScreenChangeListener!=null){
+            if(fullScreen){
+                mOnScreenChangeListener.onFullScreen();
+            }else {
+                mOnScreenChangeListener.onQuitFullScreen();
+            }
+        }
+    }
+
     private void togglePlayerLayoutParams(boolean fullScreen) {
         ViewGroup.LayoutParams params = getLayoutParams();
         if(fullScreen){
             params.height = mWidthPixels;
             params.width = mHeightPixels;
+            addGlobalLayoutListener();
         }else{
             params.height = mOriginalHeight;
             params.width = mWidthPixels;
         }
         setLayoutParams(params);
+    }
+
+    @SuppressLint("NewApi")
+    private void removeContentViewLayoutListener(){
+        final View contentView = ((ViewGroup)mActivity.findViewById(android.R.id.content)).getChildAt(0);
+        if(contentView!=null){
+            contentView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        }
+    }
+
+    @SuppressLint("NewApi")
+    private void addGlobalLayoutListener() {
+        if(mActivity!=null){
+            final View contentView = ((ViewGroup)mActivity.findViewById(android.R.id.content)).getChildAt(0);
+            if(contentView!=null){
+                contentView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+            }
+        }
+    }
+
+    @Override
+    public void onGlobalLayout() {
+        initScreenParams();
+        ViewGroup.LayoutParams params = getLayoutParams();
+        if(isFullScreen && params.width!=mHeightPixels){
+            params.height = mHeightPixels;
+            params.width = mWidthPixels;
+            setLayoutParams(params);
+        }
     }
 
     @Override
