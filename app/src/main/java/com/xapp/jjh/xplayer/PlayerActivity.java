@@ -87,6 +87,15 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(mVideoPlayer!=null){
+            mVideoPlayer.onDestroy();
+            mVideoPlayer = null;
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if(mVideoPlayer!=null){
