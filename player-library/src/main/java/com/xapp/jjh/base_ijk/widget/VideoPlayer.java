@@ -348,25 +348,31 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
         }
     }
 
-    public void doConfigChange(Configuration newConfig){
-        portrait = newConfig.orientation == Configuration.ORIENTATION_PORTRAIT;
-        if(mOnScreenChangeListener!=null){
-            if(portrait){
-                mOnScreenChangeListener.onPortrait();
-            }else {
-                mOnScreenChangeListener.onLandScape();
-            }
-        }
-        if(mVideoView!=null){
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    tryFullScreen(!portrait);
-                    togglePlayerLayoutParams(!portrait);
+    public void doConfigChange(final Configuration newConfig){
+        post(new Runnable() {
+            @Override
+            public void run() {
+                portrait = newConfig.orientation == Configuration.ORIENTATION_PORTRAIT;
+                if(mOnScreenChangeListener!=null){
+                    if(portrait){
+                        mOnScreenChangeListener.onPortrait();
+                    }else {
+                        mOnScreenChangeListener.onLandScape();
+                    }
                 }
-            });
-            orientationEventListener.enable();
-        }
+                if(mVideoView!=null){
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            tryFullScreen(!portrait);
+                            togglePlayerLayoutParams(!portrait);
+                        }
+                    });
+                    orientationEventListener.enable();
+                }
+            }
+        });
+
     }
 
     public void toggleFullScreen(){

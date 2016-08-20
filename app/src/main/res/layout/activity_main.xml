@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.xapp.jjh.xplayer.MainActivity">
+    tools:context=".PlayerActivity">
 
     <com.xapp.jjh.base_ijk.XPlayer
         android:id="@+id/player"
