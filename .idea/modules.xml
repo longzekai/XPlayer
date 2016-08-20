@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/ijkplayer-java/ijkplayer-java.iml" filepath="$PROJECT_DIR$/ijkplayer-java/ijkplayer-java.iml" />
       <module fileurl="file://$PROJECT_DIR$/player-library/player-library.iml" filepath="$PROJECT_DIR$/player-library/player-library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xui/xui.iml" filepath="$PROJECT_DIR$/xui/xui.iml" />
     </modules>
   </component>
 </project>

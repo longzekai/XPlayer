@@ -1,1 +1,1 @@
-include ':app', ':ijkplayer-java', ':player-library'
+include ':app', ':ijkplayer-java', ':player-library', ':xui'
