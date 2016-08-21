@@ -104,6 +104,22 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(mVideoPlayer!=null){
+            mVideoPlayer.resume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(mVideoPlayer!=null){
+            mVideoPlayer.pause();
+        }
+    }
+
+    @Override
     public void onPrepared() {
 
     }
