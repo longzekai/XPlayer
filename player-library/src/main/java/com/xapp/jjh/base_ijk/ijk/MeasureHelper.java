@@ -16,10 +16,13 @@
 
 package com.xapp.jjh.base_ijk.ijk;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 
-import java.lang.ref.WeakReference;
+import com.xapp.jjh.base_ijk.R;
 
+import java.lang.ref.WeakReference;
 
 public final class MeasureHelper {
     private WeakReference<View> mWeakView;
@@ -213,32 +216,32 @@ public final class MeasureHelper {
         mCurrentAspectRatio = aspectRatio;
     }
 
-//    @NonNull
-//    public static String getAspectRatioText(Context context, int aspectRatio) {
-//        String text;
-//        switch (aspectRatio) {
-//            case IRenderView.AR_ASPECT_FIT_PARENT:
-//                text = context.getString(R.string.VideoView_ar_aspect_fit_parent);
-//                break;
-//            case IRenderView.AR_ASPECT_FILL_PARENT:
-//                text = context.getString(R.string.VideoView_ar_aspect_fill_parent);
-//                break;
-//            case IRenderView.AR_ASPECT_WRAP_CONTENT:
-//                text = context.getString(R.string.VideoView_ar_aspect_wrap_content);
-//                break;
-//            case IRenderView.AR_MATCH_PARENT:
-//                text = context.getString(R.string.VideoView_ar_match_parent);
-//                break;
-//            case IRenderView.AR_16_9_FIT_PARENT:
-//                text = context.getString(R.string.VideoView_ar_16_9_fit_parent);
-//                break;
-//            case IRenderView.AR_4_3_FIT_PARENT:
-//                text = context.getString(R.string.VideoView_ar_4_3_fit_parent);
-//                break;
-//            default:
-//                text = context.getString(R.string.N_A);
-//                break;
-//        }
-//        return text;
-//    }
+    @NonNull
+    public static String getAspectRatioText(Context context, int aspectRatio) {
+        String text;
+        switch (aspectRatio) {
+            case IRenderView.AR_ASPECT_FIT_PARENT:
+                text = context.getString(R.string.VideoView_ar_aspect_fit_parent);
+                break;
+            case IRenderView.AR_ASPECT_FILL_PARENT:
+                text = context.getString(R.string.VideoView_ar_aspect_fill_parent);
+                break;
+            case IRenderView.AR_ASPECT_WRAP_CONTENT:
+                text = context.getString(R.string.VideoView_ar_aspect_wrap_content);
+                break;
+            case IRenderView.AR_MATCH_PARENT:
+                text = context.getString(R.string.VideoView_ar_match_parent);
+                break;
+            case IRenderView.AR_16_9_FIT_PARENT:
+                text = context.getString(R.string.VideoView_ar_16_9_fit_parent);
+                break;
+            case IRenderView.AR_4_3_FIT_PARENT:
+                text = context.getString(R.string.VideoView_ar_4_3_fit_parent);
+                break;
+            default:
+                text = context.getString(R.string.N_A);
+                break;
+        }
+        return text;
+    }
 }

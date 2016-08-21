@@ -4,11 +4,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".PlayerActivity">
 
     <com.xapp.jjh.base_ijk.XPlayer
         android:id="@+id/player"
         android:layout_width="match_parent"
-        android:layout_height="200dp"/>
+        android:layout_height="200dp"
+        android:layout_centerInParent="true"/>
+
 
 </LinearLayout>

@@ -4,10 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.xapp.jjh.base_ijk.inter.IExtendHandle;
 import com.xapp.jjh.base_ijk.listener.OnScreenChangeListener;
 import com.xapp.jjh.base_ijk.listener.OnSlideHandleListener;
@@ -44,6 +48,8 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
     private View mPlayControl;
     private SeekBar mSeekBar;
     private ImageView iv_play_state;
+    private ImageView iv_center_play;
+    private ImageView iv_screen;
     private TextView tv_time;
 
     private boolean showStatusBar;
@@ -123,6 +129,8 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
         controller.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
         mPlayControl = controller.findViewById(R.id.ll_play_control);
         iv_play_state = (ImageView) controller.findViewById(R.id.iv_play_state);
+        iv_screen = (ImageView) controller.findViewById(R.id.iv_screen);
+        iv_center_play = (ImageView) controller.findViewById(R.id.iv_center_play);
         mSeekBar = (SeekBar) controller.findViewById(R.id.seek_bar);
         tv_time = (TextView) controller.findViewById(R.id.tv_time);
         rl_status_bar = (RelativeLayout) controller.findViewById(R.id.rl_status_bar);
@@ -186,7 +194,8 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
 
             @Override
             public void onPortrait() {
-
+                Toast.makeText(getContext(),"port",Toast.LENGTH_SHORT).show();
+                setStatusBarState(false);
             }
 
             @Override
@@ -199,6 +208,39 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
                 setStatusBarState(false);
             }
         });
+        iv_center_play.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rePlay();
+                setLoadingState(true);
+                iv_center_play.setVisibility(View.GONE);
+            }
+        });
+        iv_screen.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleFullScreen();
+            }
+        });
+    }
+
+    @Override
+    protected void onScreenOrientationChange() {
+        super.onScreenOrientationChange();
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                updateFullScreenButton();
+            }
+        });
+    }
+
+    private void updateFullScreenButton() {
+        if (getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            iv_screen.setImageResource(R.mipmap.icon_full_screen_exit);
+        } else {
+            iv_screen.setImageResource(R.mipmap.icon_full_screen);
+        }
     }
 
     private void updateSeekBarProgress(long progress){
@@ -210,6 +252,7 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
     @Override
     protected void onRenderStart() {
         super.onRenderStart();
+        iv_center_play.setVisibility(View.GONE);
         setPlayStateIcon(true);
         if(mSeekBar!=null){
             mSeekBar.setMax(getDuration());
@@ -233,6 +276,7 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
     protected void onPlayComplete() {
         super.onPlayComplete();
         mHandler.removeMessages(MSG_PLAYING);
+        iv_center_play.setVisibility(View.VISIBLE);
     }
 
     private void initManager() {

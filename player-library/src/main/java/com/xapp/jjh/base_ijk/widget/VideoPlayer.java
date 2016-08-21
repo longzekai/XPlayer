@@ -11,8 +11,10 @@ import android.media.MediaFormat;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -23,6 +25,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
+
 import com.xapp.jjh.base_ijk.bean.VideoPlayingInfo;
 import com.xapp.jjh.base_ijk.config.DecodeMode;
 import com.xapp.jjh.base_ijk.config.ViewType;
@@ -69,6 +73,16 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
     private OrientationEventListener orientationEventListener;
     private boolean portrait;
     protected boolean isFullScreen;
+
+    protected Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+
+            }
+        }
+    };
 
     public VideoPlayer(Context context) {
         super(context);
@@ -181,6 +195,7 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
         orientationEventListener = new OrientationEventListener(mActivity) {
             @Override
             public void onOrientationChanged(int orientation) {
+                portrait = getScreenOrientation()==ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
                 if (orientation >= 0 && orientation <= 30 || orientation >= 330 || (orientation >= 150 && orientation <= 210)) {
                     //竖屏
                     if (portrait) {
@@ -348,27 +363,25 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
         }
     }
 
-    public void doConfigChange(final Configuration newConfig){
-        post(new Runnable() {
+    public void doConfigChange(Configuration newConfig){
+        Log.d(TAG,"doConfigChange..." + newConfig.orientation + " screenListener == null " + (mOnScreenChangeListener == null));
+        portrait = newConfig.orientation == Configuration.ORIENTATION_PORTRAIT;
+        isFullScreen = !portrait;
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
-                portrait = newConfig.orientation == Configuration.ORIENTATION_PORTRAIT;
+                if(mVideoView!=null){
+                    tryFullScreen(!portrait);
+                    togglePlayerLayoutParams(!portrait);
+                    onScreenOrientationChange();
+                    orientationEventListener.enable();
+                }
                 if(mOnScreenChangeListener!=null){
                     if(portrait){
                         mOnScreenChangeListener.onPortrait();
                     }else {
                         mOnScreenChangeListener.onLandScape();
                     }
-                }
-                if(mVideoView!=null){
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            tryFullScreen(!portrait);
-                            togglePlayerLayoutParams(!portrait);
-                        }
-                    });
-                    orientationEventListener.enable();
                 }
             }
         });
@@ -378,16 +391,24 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
     public void toggleFullScreen(){
         if(mActivity == null)
             return;
-        if (getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+        int orientation = getScreenOrientation();
+        if (orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             Log.d(TAG,"toggle portrait");
+            isFullScreen = false;
             mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         } else {
             Log.d(TAG,"toggle landscape");
+            isFullScreen = true;
             mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
+        onScreenOrientationChange();
     }
 
-    private int getScreenOrientation() {
+    protected void onScreenOrientationChange() {
+
+    }
+
+    protected int getScreenOrientation() {
         if(mActivity == null)
             return 1;
         int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
@@ -463,7 +484,6 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
 
     private void setFullScreen(boolean fullScreen) {
         if (mActivity != null) {
-            isFullScreen = fullScreen;
             WindowManager.LayoutParams attrs = mActivity.getWindow().getAttributes();
             handleFullScreenListener(fullScreen);
             if (fullScreen) {
@@ -490,21 +510,24 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
     }
 
     private void togglePlayerLayoutParams(boolean fullScreen) {
+        initScreenParams();
         ViewGroup.LayoutParams params = getLayoutParams();
         if(fullScreen){
-            params.height = mWidthPixels;
-            params.width = mHeightPixels;
-            addGlobalLayoutListener();
+            params.height = Math.min(mWidthPixels,mHeightPixels);
+            params.width = Math.max(mWidthPixels,mHeightPixels);
+            Log.d(TAG,"set land");
         }else{
             params.height = mOriginalHeight;
-            params.width = mWidthPixels;
+            params.width = Math.min(mWidthPixels,mHeightPixels);;
+            Log.d(TAG,"set port");
         }
         setLayoutParams(params);
+        addGlobalLayoutListener();
     }
 
     @SuppressLint("NewApi")
     private void removeContentViewLayoutListener(){
-        final View contentView = ((ViewGroup)mActivity.findViewById(android.R.id.content)).getChildAt(0);
+        final View contentView = (mActivity.findViewById(android.R.id.content));
         if(contentView!=null){
             contentView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         }
@@ -513,7 +536,7 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
     @SuppressLint("NewApi")
     private void addGlobalLayoutListener() {
         if(mActivity!=null){
-            final View contentView = ((ViewGroup)mActivity.findViewById(android.R.id.content)).getChildAt(0);
+            final View contentView = (mActivity.findViewById(android.R.id.content));
             if(contentView!=null){
                 contentView.getViewTreeObserver().addOnGlobalLayoutListener(this);
             }
@@ -522,9 +545,11 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
 
     @Override
     public void onGlobalLayout() {
+        Log.d(TAG,"onGlobalLayout ******");
         initScreenParams();
         ViewGroup.LayoutParams params = getLayoutParams();
-        if(isFullScreen && params.width!=mHeightPixels){
+        if(isFullScreen && Math.max(mWidthPixels,mHeightPixels)!=Math.max(params.width,params.height)){
+            Log.d(TAG,"onGlobalLayout change .....player W = " + params.width + " H = " + params.height + " SW = " + mWidthPixels + " SH = " + mHeightPixels);
             params.height = mHeightPixels;
             params.width = mWidthPixels;
             setLayoutParams(params);
@@ -566,6 +591,13 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
     }
 
     @Override
+    public void rePlay() {
+        if(!TextUtils.isEmpty(mUrl) && hasLoadLibrary && mVideoView!=null){
+            play(mUrl);
+        }
+    }
+
+    @Override
     public void start() {
         if(mVideoView!=null){
             mVideoView.start();
@@ -603,6 +635,14 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
 
     protected void onResumed() {
 
+    }
+
+    @Override
+    public void stop() {
+        if(mVideoView!=null){
+            mVideoView.stop();
+            mStatus = STATUS_STOP;
+        }
     }
 
     @Override

@@ -39,6 +39,15 @@
 
     </RelativeLayout>
 
+    <ImageView
+        android:id="@+id/iv_center_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:scaleType="centerInside"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/icon_center_play"/>
+
     <LinearLayout
         android:id="@+id/ll_play_control"
         android:layout_width="match_parent"
@@ -74,6 +83,12 @@
             android:textSize="12sp"
             android:textColor="#ffffff"
             android:text="00:00:00/00:00:00"/>
+        <ImageView
+            android:id="@+id/iv_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:src="@mipmap/icon_full_screen"/>
     </LinearLayout>
 
 </RelativeLayout>
