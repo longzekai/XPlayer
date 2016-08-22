@@ -1,9 +1,12 @@
 package com.xapp.jjh.xplayer;
 
 import android.content.res.Configuration;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+
 import com.xapp.jjh.base_ijk.XPlayer;
 import com.xapp.jjh.base_ijk.config.DecodeMode;
 import com.xapp.jjh.base_ijk.config.ViewType;
@@ -19,6 +22,7 @@ import com.xapp.jjh.xui.activity.TopBarActivity;
 
 public class PlayerActivity extends TopBarActivity implements OnPreparedListener, OnPlayInfoListener, OnErrorListener, OnSeekCompleteListener, OnCompletionListener, OnSlideHandleListener {
 
+    private String TAG = "PlayerActivity";
     private XPlayer mVideoPlayer;
     private String url;
 
@@ -55,6 +59,12 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
                 quitFullScreen();
             }
         });
+//        mRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//                Log.d(TAG,"onGlobalLayout");
+//            }
+//        });
     }
 
     public void findViewById() {
@@ -74,6 +84,7 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
         mVideoPlayer.setOnSeekCompleteListener(this);
         mVideoPlayer.setOnCompletionListener(this);
         mVideoPlayer.setOnSlideHandleListener(this);
+        mVideoPlayer.setRootView(mRootView);
         mVideoPlayer.play(url);
         mVideoPlayer.setLoadingState(true);
     }

@@ -6,9 +6,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+
 import com.xapp.jjh.xplayer.adapter.VideoListAdapter;
 import com.xapp.jjh.xplayer.bean.VideoInfo;
 import com.xapp.jjh.xplayer.utils.VideoUtils;
@@ -23,6 +26,7 @@ import java.util.List;
  */
 public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnItemClickListener {
 
+    private String TAG = "HomeActivity";
     private RecyclerView mRecycler;
     private List<VideoInfo> mList = new ArrayList<>();
 
@@ -72,6 +76,17 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
                 mHandler.sendEmptyMessage(MSG_LOAD_OVER);
             }
         }.start();
+    }
+
+    @Override
+    public void setListener() {
+        super.setListener();
+//        mRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//                Log.d(TAG,"Home onGlobalLayout ......");
+//            }
+//        });
     }
 
     @Override

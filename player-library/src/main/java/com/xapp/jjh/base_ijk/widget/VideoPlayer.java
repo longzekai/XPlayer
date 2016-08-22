@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.media.MediaFormat;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -18,6 +19,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.OrientationEventListener;
 import android.view.Surface;
 import android.view.View;
@@ -218,6 +220,31 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
         mActivity.getWindowManager().getDefaultDisplay().getMetrics(dm);
         mWidthPixels = dm.widthPixels;
         mHeightPixels = dm.heightPixels;
+
+//        WindowManager w = mActivity.getWindowManager();
+//        Display d = w.getDefaultDisplay();
+//        DisplayMetrics metrics = new DisplayMetrics();
+//        d.getMetrics(metrics);
+//// since SDK_INT = 1;
+//        mWidthPixels = metrics.widthPixels;
+//        mHeightPixels = metrics.heightPixels;
+//// includes window decorations (statusbar bar/menu bar)
+//        if (Build.VERSION.SDK_INT >= 14 && Build.VERSION.SDK_INT < 17)
+//            try {
+//                mWidthPixels = (Integer) Display.class.getMethod("getRawWidth").invoke(d);
+//                mHeightPixels = (Integer) Display.class.getMethod("getRawHeight").invoke(d);
+//            } catch (Exception ignored) {
+//            }
+//// includes window decorations (statusbar bar/menu bar)
+//        if (Build.VERSION.SDK_INT >= 17)
+//            try {
+//                Point realSize = new Point();
+//                Display.class.getMethod("getRealSize", Point.class).invoke(d, realSize);
+//                mWidthPixels = realSize.x;
+//                mHeightPixels = realSize.y;
+//            } catch (Exception ignored) {
+//            }
+        Log.d(TAG,"ScreenW = " + mWidthPixels + " ScreenH = " + mHeightPixels);
     }
 
     private void loadLibrary() {
@@ -336,9 +363,6 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
             if (internal != null && internal instanceof IjkMediaPlayer){
                 mMediaPlayer = (IjkMediaPlayer) internal;
             }
-        }else if(mediaPlayer instanceof AndroidMediaPlayer){
-            MediaPlayer player = ((AndroidMediaPlayer) mediaPlayer).getInternalMediaPlayer();
-            getMediaTrackInfo(player);
         }
         mediaPlayer.setOnSeekCompleteListener(new IMediaPlayer.OnSeekCompleteListener() {
             @Override
@@ -348,19 +372,6 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
                 }
             }
         });
-    }
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    private void getMediaTrackInfo(MediaPlayer mediaPlayer) {
-        MediaPlayer player = mediaPlayer;
-        MediaPlayer.TrackInfo[] trackInfos = player.getTrackInfo();
-        if(trackInfos!=null && trackInfos.length>0){
-            MediaPlayer.TrackInfo trackInfo = trackInfos[0];
-            MediaFormat mediaFormat = trackInfo.getFormat();
-            if(mediaFormat!=null){
-                Log.d(TAG,mediaFormat.toString());
-            }
-        }
     }
 
     public void doConfigChange(Configuration newConfig){
@@ -385,7 +396,8 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
                 }
             }
         });
-
+//        removeContentViewLayoutListener();
+//        addGlobalLayoutListener();
     }
 
     public void toggleFullScreen(){
@@ -468,7 +480,7 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
     }
 
     private void tryFullScreen(boolean fullScreen) {
-        removeContentViewLayoutListener();
+//        removeContentViewLayoutListener();
         if (mActivity instanceof AppCompatActivity) {
             ActionBar supportActionBar = ((AppCompatActivity) mActivity).getSupportActionBar();
             if (supportActionBar != null) {
@@ -509,27 +521,34 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
         }
     }
 
+    private View rootView;
+    public void setRootView(View view){
+        this.rootView = view;
+    }
+
     private void togglePlayerLayoutParams(boolean fullScreen) {
         initScreenParams();
         ViewGroup.LayoutParams params = getLayoutParams();
         if(fullScreen){
-            params.height = Math.min(mWidthPixels,mHeightPixels);
-            params.width = Math.max(mWidthPixels,mHeightPixels);
+//            params.height = Math.min(mWidthPixels,mHeightPixels);
+//            params.width = Math.max(mWidthPixels,mHeightPixels);
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             Log.d(TAG,"set land");
         }else{
             params.height = mOriginalHeight;
-            params.width = Math.min(mWidthPixels,mHeightPixels);;
+//            params.width = Math.min(mWidthPixels,mHeightPixels);
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             Log.d(TAG,"set port");
         }
         setLayoutParams(params);
-        addGlobalLayoutListener();
     }
 
     @SuppressLint("NewApi")
     private void removeContentViewLayoutListener(){
         final View contentView = (mActivity.findViewById(android.R.id.content));
-        if(contentView!=null){
-            contentView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        if(rootView!=null){
+            rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         }
     }
 
@@ -537,8 +556,8 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
     private void addGlobalLayoutListener() {
         if(mActivity!=null){
             final View contentView = (mActivity.findViewById(android.R.id.content));
-            if(contentView!=null){
-                contentView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+            if(rootView!=null){
+                rootView.getViewTreeObserver().addOnGlobalLayoutListener(this);
             }
         }
     }
