@@ -361,9 +361,14 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
             public void onSeekComplete(IMediaPlayer mp) {
                 if(mOnSeekCompleteListener!=null){
                     mOnSeekCompleteListener.onSeekComplete();
+                    VideoPlayer.this.onSeekComplete();
                 }
             }
         });
+    }
+
+    protected void onSeekComplete() {
+
     }
 
     public void doConfigChange(Configuration newConfig){

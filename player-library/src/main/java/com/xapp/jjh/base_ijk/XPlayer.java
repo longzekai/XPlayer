@@ -51,6 +51,8 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
     private ImageView iv_screen;
     private TextView tv_time;
 
+    private boolean isUseDefaultLoadingStyle = true;
+
     private boolean showStatusBar;
 
     private final long MSC_TIME_DELAY = 5000;
@@ -120,6 +122,12 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
         updateGestureDetector();
     }
 
+    @Override
+    public void play(String url) {
+        super.play(url);
+        setLoadingState(true);
+    }
+
     public void useDefaultPlayControl(boolean showStatusBar){
         if(mPlayControl!=null)
             return;
@@ -159,6 +167,14 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
         relativeLayout.addView(tableLayout,tableParams);
         mVideoView.setHudView(tableLayout);
         addView(relativeLayout);
+    }
+
+    public boolean isUseDefaultLoadingStyle() {
+        return isUseDefaultLoadingStyle;
+    }
+
+    public void setUseDefaultLoadingStyle(boolean useDefaultLoadingStyle) {
+        isUseDefaultLoadingStyle = useDefaultLoadingStyle;
     }
 
     private class BatteryReceiver extends BroadcastReceiver{
@@ -258,14 +274,39 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
     }
 
     @Override
+    public void seekTo(int msc) {
+        super.seekTo(msc);
+        setLoadingState(true);
+    }
+
+    @Override
     protected void onRenderStart() {
         super.onRenderStart();
         iv_center_play.setVisibility(View.GONE);
+        setLoadingState(false);
         setPlayStateIcon(true);
         if(mSeekBar!=null){
             mSeekBar.setMax(getDuration());
         }
         mHandler.sendEmptyMessageDelayed(MSG_PLAYING,1000);
+    }
+
+    @Override
+    protected void onBufferingStart() {
+        super.onBufferingStart();
+        setLoadingState(true);
+    }
+
+    @Override
+    protected void onBufferingEnd() {
+        super.onBufferingEnd();
+        setLoadingState(false);
+    }
+
+    @Override
+    protected void onSeekComplete() {
+        super.onSeekComplete();
+        setLoadingState(false);
     }
 
     @Override
@@ -285,6 +326,7 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
         super.onPlayComplete();
         mHandler.removeMessages(MSG_PLAYING);
         iv_center_play.setVisibility(View.VISIBLE);
+        setLoadingState(false);
     }
 
     private void initManager() {
@@ -549,7 +591,9 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
         mActivity.getWindow().setAttributes(lpa);
     }
 
-    public void setLoadingState(boolean state){
+    protected void setLoadingState(boolean state){
+        if(!isUseDefaultLoadingStyle)
+            return;
         touchLayout.findViewById(R.id.app_video_loading).setVisibility(state?View.VISIBLE:View.GONE);
     }
 
