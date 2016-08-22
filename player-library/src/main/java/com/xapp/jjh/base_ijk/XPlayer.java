@@ -97,6 +97,7 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
     private RelativeLayout rl_status_bar;
     private TextView tv_battery;
     private BatteryReceiver batteryReceiver;
+    private TableLayout tableLayout;
 
     public XPlayer(Context context) {
         super(context);
@@ -157,7 +158,7 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
             return ;
         RelativeLayout relativeLayout = new RelativeLayout(getContext());
         relativeLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-        TableLayout tableLayout = new TableLayout(getContext());
+        tableLayout = new TableLayout(getContext());
         RelativeLayout.LayoutParams tableParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         tableParams.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
         tableParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
@@ -167,6 +168,18 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
         relativeLayout.addView(tableLayout,tableParams);
         mVideoView.setHudView(tableLayout);
         addView(relativeLayout);
+    }
+
+    public boolean isTableLayoutShow(){
+        if(tableLayout == null)
+            return false;
+        return tableLayout.getVisibility() == View.VISIBLE;
+    }
+
+    public void setTableLayoutState(boolean state){
+        if(tableLayout!=null){
+            tableLayout.setVisibility(state?View.VISIBLE:View.GONE);
+        }
     }
 
     public boolean isUseDefaultLoadingStyle() {

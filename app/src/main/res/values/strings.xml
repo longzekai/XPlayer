@@ -2,4 +2,6 @@
     <string name="app_name">XPlayer</string>
     <string name="decode_mode_soft">软解模式</string>
     <string name="decode_mode_hard">硬解模式</string>
+    <string name="play_info_hidden">隐藏播放信息</string>
+    <string name="play_info_show">显示播放信息</string>
 </resources>

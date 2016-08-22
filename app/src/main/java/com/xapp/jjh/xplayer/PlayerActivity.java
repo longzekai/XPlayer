@@ -19,6 +19,7 @@ import com.xapp.jjh.base_ijk.listener.OnScreenChangeListener;
 import com.xapp.jjh.base_ijk.listener.OnSeekCompleteListener;
 import com.xapp.jjh.base_ijk.listener.OnSlideHandleListener;
 import com.xapp.jjh.xui.activity.TopBarActivity;
+import com.xapp.jjh.xui.inter.MenuType;
 
 
 public class PlayerActivity extends TopBarActivity implements OnPreparedListener, OnPlayInfoListener, OnErrorListener, OnSeekCompleteListener, OnCompletionListener, OnSlideHandleListener {
@@ -103,6 +104,19 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
         /** 播放指定的资源*/
         mVideoPlayer.play(url);
 //        mVideoPlayer.play("http://172.16.218.64:8080/batamu.mp4");
+        setMenuType(MenuType.TEXT,R.string.play_info_hidden);
+    }
+
+    @Override
+    public void onMenuClick() {
+        super.onMenuClick();
+        if(mVideoPlayer.isTableLayoutShow()){
+            mVideoPlayer.setTableLayoutState(false);
+            setMenuText(getString(R.string.play_info_show));
+        }else{
+            mVideoPlayer.setTableLayoutState(true);
+            setMenuText(getString(R.string.play_info_hidden));
+        }
     }
 
     @Override
