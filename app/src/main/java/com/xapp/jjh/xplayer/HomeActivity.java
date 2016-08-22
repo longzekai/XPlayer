@@ -20,6 +20,8 @@ import com.xapp.jjh.xui.inter.MenuType;
 import com.xapp.jjh.xui.inter.PageState;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -77,9 +79,23 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
             public void run() {
                 super.run();
                 VideoUtils.getVideos(mList, Environment.getExternalStorageDirectory());
+                Collections.sort(mList,new MCompartor());
                 mHandler.sendEmptyMessage(MSG_LOAD_OVER);
             }
         }.start();
+    }
+
+    public class MCompartor implements Comparator<VideoInfo>{
+        @Override
+        public int compare(VideoInfo lhs, VideoInfo rhs) {
+            if(lhs.getSize()>rhs.getSize()){
+                return -1;
+            }
+            if(lhs.getSize()<rhs.getSize()){
+                return 1;
+            }
+            return 0;
+        }
     }
 
     @Override

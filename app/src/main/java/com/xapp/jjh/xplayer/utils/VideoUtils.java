@@ -50,6 +50,7 @@ public class VideoUtils {
                         VideoInfo vi = new VideoInfo();
                         vi.setDisplayName(file.getName());
                         vi.setPath(file.getAbsolutePath());
+                        vi.setSize(file.length());
                         list.add(vi);
                         return true;
                     }
