@@ -186,28 +186,6 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
                 seekTo(progress);
             }
         });
-        setOnScreenChangeListener(new OnScreenChangeListener() {
-            @Override
-            public void onLandScape() {
-
-            }
-
-            @Override
-            public void onPortrait() {
-                Toast.makeText(getContext(),"port",Toast.LENGTH_SHORT).show();
-                setStatusBarState(false);
-            }
-
-            @Override
-            public void onFullScreen() {
-
-            }
-
-            @Override
-            public void onQuitFullScreen() {
-                setStatusBarState(false);
-            }
-        });
         iv_center_play.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -222,6 +200,18 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
                 toggleFullScreen();
             }
         });
+    }
+
+    @Override
+    protected void onPortrait() {
+        super.onPortrait();
+        setStatusBarState(false);
+    }
+
+    @Override
+    protected void onFullScreen() {
+        super.onFullScreen();
+        setStatusBarState(false);
     }
 
     @Override

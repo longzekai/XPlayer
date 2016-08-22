@@ -390,14 +390,24 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
                 if(mOnScreenChangeListener!=null){
                     if(portrait){
                         mOnScreenChangeListener.onPortrait();
+                        onPortrait();
                     }else {
                         mOnScreenChangeListener.onLandScape();
+                        onLandScape();
                     }
                 }
             }
         });
 //        removeContentViewLayoutListener();
 //        addGlobalLayoutListener();
+    }
+
+    protected void onLandScape() {
+
+    }
+
+    protected void onPortrait() {
+
     }
 
     public void toggleFullScreen(){
@@ -515,10 +525,20 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
         if(mOnScreenChangeListener!=null){
             if(fullScreen){
                 mOnScreenChangeListener.onFullScreen();
+                onFullScreen();
             }else {
                 mOnScreenChangeListener.onQuitFullScreen();
+                onQuitFullScreen();
             }
         }
+    }
+
+    protected void onFullScreen() {
+
+    }
+
+    protected void onQuitFullScreen() {
+
     }
 
     private View rootView;

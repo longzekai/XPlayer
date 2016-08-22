@@ -132,12 +132,12 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
 
     @Override
     public void onPrepared() {
-
+        Log.d(TAG,"onPrepared");
     }
 
     @Override
     public void onPlayerInfo(int what, int extra) {
-
+        Log.d(TAG,"onPlayerInfo" + what);
     }
 
     @Override
@@ -157,17 +157,17 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
 
     @Override
     public void onError(int what, int extra) {
-
+        Log.d(TAG,"onError" + what);
     }
 
     @Override
     public void onSeekComplete() {
-
+        Log.d(TAG,"onSeekComplete");
     }
 
     @Override
     public void onCompletion() {
-
+        Log.d(TAG,"onCompletion");
     }
 
     @Override
