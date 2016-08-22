@@ -5,11 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,11 +17,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
+import com.xapp.jjh.base_ijk.config.DecodeMode;
 import com.xapp.jjh.base_ijk.inter.IExtendHandle;
-import com.xapp.jjh.base_ijk.listener.OnScreenChangeListener;
 import com.xapp.jjh.base_ijk.listener.OnSlideHandleListener;
 import com.xapp.jjh.base_ijk.utils.TimeUtil;
 import com.xapp.jjh.base_ijk.widget.VideoPlayer;
@@ -145,6 +144,23 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
         }
     }
 
+    public void showTableLayout(){
+        if(getDecodeMode() == DecodeMode.MEDIAPLAYER)
+            return ;
+        RelativeLayout relativeLayout = new RelativeLayout(getContext());
+        relativeLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+        TableLayout tableLayout = new TableLayout(getContext());
+        RelativeLayout.LayoutParams tableParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        tableParams.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
+        tableParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
+        int padding = 15;
+        tableLayout.setPadding(padding,padding,padding,padding);
+        tableLayout.setBackgroundColor(Color.parseColor("#77ffffff"));
+        relativeLayout.addView(tableLayout,tableParams);
+        mVideoView.setHudView(tableLayout);
+        addView(relativeLayout);
+    }
+
     private class BatteryReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -165,6 +181,7 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
                 }else{
                     resume();
                 }
+                delayHiddenPlayControl();
             }
         });
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -184,6 +201,7 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
                 seekTo(progress);
+                delayHiddenPlayControl();
             }
         });
         iv_center_play.setOnClickListener(new OnClickListener() {
@@ -408,10 +426,14 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
                 setPlayControlState(false);
             }else{
                 setPlayControlState(true);
-                mHandler.removeMessages(MSG_DELAY_HIDDEN_PLAY_CONTROL);
-                mHandler.sendEmptyMessageDelayed(MSG_DELAY_HIDDEN_PLAY_CONTROL,MSC_TIME_DELAY);
+                delayHiddenPlayControl();
             }
         }
+    }
+
+    private void delayHiddenPlayControl() {
+        mHandler.removeMessages(MSG_DELAY_HIDDEN_PLAY_CONTROL);
+        mHandler.sendEmptyMessageDelayed(MSG_DELAY_HIDDEN_PLAY_CONTROL,MSC_TIME_DELAY);
     }
 
     public void setPlayControlState(boolean visible){

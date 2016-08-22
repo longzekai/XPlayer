@@ -7,9 +7,6 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.Point;
-import android.media.MediaFormat;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -19,7 +16,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.OrientationEventListener;
 import android.view.Surface;
 import android.view.View;
@@ -27,9 +23,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.Toast;
-
-import com.xapp.jjh.base_ijk.bean.VideoPlayingInfo;
 import com.xapp.jjh.base_ijk.config.DecodeMode;
 import com.xapp.jjh.base_ijk.config.ViewType;
 import com.xapp.jjh.base_ijk.ijk.IjkVideoView;
@@ -40,7 +33,6 @@ import com.xapp.jjh.base_ijk.listener.OnPlayInfoListener;
 import com.xapp.jjh.base_ijk.listener.OnPreparedListener;
 import com.xapp.jjh.base_ijk.listener.OnScreenChangeListener;
 import com.xapp.jjh.base_ijk.listener.OnSeekCompleteListener;
-import tv.danmaku.ijk.media.player.AndroidMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import tv.danmaku.ijk.media.player.MediaPlayerProxy;
@@ -53,7 +45,7 @@ import tv.danmaku.ijk.media.player.MediaPlayerProxy;
 public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeObserver.OnGlobalLayoutListener {
 
     private String TAG = "VideoPlayer";
-    private IjkVideoView mVideoView;
+    protected IjkVideoView mVideoView;
     private IjkMediaPlayer mMediaPlayer;
     protected Activity mActivity;
     private int mOriginalHeight;
@@ -593,21 +585,6 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
             params.width = mWidthPixels;
             setLayoutParams(params);
         }
-    }
-
-    @Override
-    public VideoPlayingInfo getVideoPlayingInfo() {
-        VideoPlayingInfo videoPlayingInfo = null;
-        if(mMediaPlayer!=null){
-            videoPlayingInfo = new VideoPlayingInfo();
-            videoPlayingInfo.setOutputFramesPerSecond(mMediaPlayer.getVideoOutputFramesPerSecond());
-            videoPlayingInfo.setDecodeFramesPerSecond(mMediaPlayer.getVideoDecodeFramesPerSecond());
-            videoPlayingInfo.setAudioCachedBytes(mMediaPlayer.getAudioCachedBytes());
-            videoPlayingInfo.setVideoCachedBytes(mMediaPlayer.getVideoCachedBytes());
-            videoPlayingInfo.setAudioCachedDuration(mMediaPlayer.getAudioCachedDuration());
-            videoPlayingInfo.setVideoCachedDuration(mMediaPlayer.getVideoCachedDuration());
-        }
-        return videoPlayingInfo;
     }
 
     private void statusChange(int status) {

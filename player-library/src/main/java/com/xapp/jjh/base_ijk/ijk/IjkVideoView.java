@@ -100,12 +100,6 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     private boolean mCanSeekBack = true;
     private boolean mCanSeekForward = true;
 
-    private boolean usingAndroidPlayer=false;
-    private boolean usingMediaCodec=false;
-
-    private boolean enableSurfaceView=true;
-    private boolean enableTextureView=false;
-
     /** Subtitle rendering widget overlaid on top of the video. */
     // private RenderingWidget mSubtitleWidget;
 

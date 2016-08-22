@@ -1,6 +1,7 @@
 package com.xapp.jjh.xplayer;
 
 import android.content.res.Configuration;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,9 +76,10 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
     public void initData() {
         setSwipeBackEnable(false);
         setTopBarTitle(getIntent().getStringExtra("name"));
-        mVideoPlayer.setDecodeMode(DecodeMode.SOFT);
+        mVideoPlayer.setDecodeMode(DecodeMode.HARD);
         mVideoPlayer.setViewType(ViewType.SURFACEVIEW);
         mVideoPlayer.useDefaultPlayControl(true);
+        mVideoPlayer.showTableLayout();
         mVideoPlayer.setOnPreparedListener(this);
         mVideoPlayer.setOnPlayerInfoListener(this);
         mVideoPlayer.setOnErrorListener(this);
@@ -158,6 +160,7 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
     @Override
     public void onError(int what, int extra) {
         Log.d(TAG,"onError" + what);
+        showSnackBar("Error", Snackbar.LENGTH_LONG,"OK",null);
     }
 
     @Override
@@ -168,6 +171,7 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
     @Override
     public void onCompletion() {
         Log.d(TAG,"onCompletion");
+        showSnackBar("Play Complete",null,null);
     }
 
     @Override

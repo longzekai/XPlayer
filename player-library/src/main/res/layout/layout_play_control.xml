@@ -48,6 +48,15 @@
         android:layout_centerInParent="true"
         android:src="@mipmap/icon_center_play"/>
 
+    <TableLayout
+        android:id="@+id/hud_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:background="#44000000"
+        android:visibility="gone"
+        android:padding="8dp" />
+
     <LinearLayout
         android:id="@+id/ll_play_control"
         android:layout_width="match_parent"

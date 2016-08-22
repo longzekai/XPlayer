@@ -1,7 +1,5 @@
 package com.xapp.jjh.base_ijk.inter;
 
-import com.xapp.jjh.base_ijk.bean.VideoPlayingInfo;
-
 /**
  * ------------------------------------
  * Created by Taurus on 2016/8/2.
@@ -30,6 +28,5 @@ public interface IVideoPlayer {
     int getDuration();
     int getStatus();
     int getBufferPercentage();
-    VideoPlayingInfo getVideoPlayingInfo();
     void onDestroy();
 }
