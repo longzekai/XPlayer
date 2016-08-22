@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">XPlayer</string>
+    <string name="decode_mode_soft">软解模式</string>
+    <string name="decode_mode_hard">硬解模式</string>
 </resources>

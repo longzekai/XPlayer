@@ -89,8 +89,9 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
     public void initData() {
         setSwipeBackEnable(false);
         setTopBarTitle(getIntent().getStringExtra("name"));
+        int decodeMode = getIntent().getIntExtra("decode_mode",0);
         /** 设置解码模式*/
-        mVideoPlayer.setDecodeMode(DecodeMode.HARD);
+        mVideoPlayer.setDecodeMode(decodeMode == 0?DecodeMode.SOFT:DecodeMode.HARD);
         /** 设置渲染视图类型*/
         mVideoPlayer.setViewType(ViewType.SURFACEVIEW);
         /** 是否使用默认的播放控制器*/
@@ -101,6 +102,7 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
         mVideoPlayer.setUseDefaultLoadingStyle(true);
         /** 播放指定的资源*/
         mVideoPlayer.play(url);
+//        mVideoPlayer.play("http://172.16.218.64:8080/batamu.mp4");
     }
 
     @Override

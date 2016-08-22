@@ -16,6 +16,7 @@ import com.xapp.jjh.xplayer.adapter.VideoListAdapter;
 import com.xapp.jjh.xplayer.bean.VideoInfo;
 import com.xapp.jjh.xplayer.utils.VideoUtils;
 import com.xapp.jjh.xui.activity.TopBarActivity;
+import com.xapp.jjh.xui.inter.MenuType;
 import com.xapp.jjh.xui.inter.PageState;
 
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
     private String TAG = "HomeActivity";
     private RecyclerView mRecycler;
     private List<VideoInfo> mList = new ArrayList<>();
+
+    private int decode_mode = 0;
 
     private final int MSG_LOAD_OVER = 101;
     private Handler mHandler = new Handler(){
@@ -63,6 +66,7 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
 
     @Override
     public void initData() {
+        setMenuType(MenuType.TEXT,R.string.decode_mode_soft);
         setNavigationVisible(false);
         setSwipeBackEnable(false);
         setTopBarTitle("视频列表");
@@ -90,12 +94,22 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
     }
 
     @Override
+    public void onMenuClick() {
+        super.onMenuClick();
+        if(decode_mode == 0){
+            decode_mode = 1;
+            setMenuText(getString(R.string.decode_mode_hard));
+        }
+    }
+
+    @Override
     public void onItemClick(RecyclerView.ViewHolder holder, int position) {
         String path = mList.get(position).getPath();
         String name = mList.get(position).getDisplayName();
         Intent intent = new Intent(getApplicationContext(),PlayerActivity.class);
         intent.putExtra("path",path);
         intent.putExtra("name",name);
+        intent.putExtra("decode_mode",decode_mode);
         startActivity(intent);
     }
 }
