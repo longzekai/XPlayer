@@ -99,6 +99,9 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
         if(decode_mode == 0){
             decode_mode = 1;
             setMenuText(getString(R.string.decode_mode_hard));
+        }else if(decode_mode == 1){
+            decode_mode = 0;
+            setMenuText(getString(R.string.decode_mode_soft));
         }
     }
 
