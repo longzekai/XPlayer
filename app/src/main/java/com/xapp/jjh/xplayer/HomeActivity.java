@@ -1,5 +1,6 @@
 package com.xapp.jjh.xplayer;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Environment;
 import android.os.Handler;
@@ -13,10 +14,14 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import com.xapp.jjh.xplayer.adapter.VideoListAdapter;
+import com.xapp.jjh.xplayer.bean.PlayerMenu;
 import com.xapp.jjh.xplayer.bean.VideoInfo;
 import com.xapp.jjh.xplayer.utils.VideoUtils;
 import com.xapp.jjh.xui.activity.TopBarActivity;
+import com.xapp.jjh.xui.bean.BaseMenuItem;
+import com.xapp.jjh.xui.inter.DialogCallBack;
 import com.xapp.jjh.xui.inter.MenuType;
+import com.xapp.jjh.xui.inter.OnMenuItemClickListener;
 import com.xapp.jjh.xui.inter.PageState;
 
 import java.util.ArrayList;
@@ -110,15 +115,30 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
     }
 
     @Override
+    public void onBackPressed() {
+        showDialog("Sure ? ", new DialogCallBack() {
+            @Override
+            public void onRightClick(Dialog dialog) {
+                backSpace();
+            }
+        });
+    }
+
+    @Override
     public void onMenuClick() {
         super.onMenuClick();
-        if(decode_mode == 0){
-            decode_mode = 1;
-            setMenuText(getString(R.string.decode_mode_hard));
-        }else if(decode_mode == 1){
-            decode_mode = 0;
-            setMenuText(getString(R.string.decode_mode_soft));
-        }
+        List<PlayerMenu> menuList = new ArrayList<>();
+        menuList.add(new PlayerMenu(PlayerMenu.DECODE_MODE_CODE_SOFT,-1,"软解码"));
+        menuList.add(new PlayerMenu(PlayerMenu.DECODE_MODE_CODE_HARD,-1,"硬解码"));
+        menuList.add(new PlayerMenu(PlayerMenu.DECODE_MODE_CODE_MEDIA_PLAYER,-1,"原生解码"));
+        showMenuList(menuList, new OnMenuItemClickListener() {
+            @Override
+            public void onMenuItemClick(BaseMenuItem menuItem, int position) {
+                PlayerMenu menu = (PlayerMenu) menuItem;
+                decode_mode = menu.getDecodeModeCode();
+                setMenuText(menu.getItemText());
+            }
+        });
     }
 
     @Override

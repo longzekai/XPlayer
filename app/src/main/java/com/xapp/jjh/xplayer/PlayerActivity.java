@@ -98,7 +98,7 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
         setTopBarTitle(getIntent().getStringExtra("name"));
         int decodeMode = getIntent().getIntExtra("decode_mode",0);
         /** 设置解码模式*/
-        mVideoPlayer.setDecodeMode(decodeMode == 0?DecodeMode.SOFT:DecodeMode.HARD);
+        mVideoPlayer.setDecodeMode(new PlayerMenu().getDecodeMode(decodeMode));
         /** 设置渲染视图类型*/
         mVideoPlayer.setViewType(ViewType.SURFACEVIEW);
         /** 是否使用默认的播放控制器*/

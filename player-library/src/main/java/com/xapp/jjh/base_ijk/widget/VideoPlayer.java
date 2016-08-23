@@ -263,6 +263,7 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
         mVideoView.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
             @Override
             public boolean onInfo(IMediaPlayer mp, int what, int extra) {
+                Log.d(TAG,"onInfo : what = " + what);
                 switch (what) {
                     case IMediaPlayer.MEDIA_INFO_BUFFERING_START:
                         onBufferingStart();
