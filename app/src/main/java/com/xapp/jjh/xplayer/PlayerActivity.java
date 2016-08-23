@@ -18,8 +18,14 @@ import com.xapp.jjh.base_ijk.listener.OnPreparedListener;
 import com.xapp.jjh.base_ijk.listener.OnScreenChangeListener;
 import com.xapp.jjh.base_ijk.listener.OnSeekCompleteListener;
 import com.xapp.jjh.base_ijk.listener.OnSlideHandleListener;
+import com.xapp.jjh.xplayer.bean.PlayerMenu;
 import com.xapp.jjh.xui.activity.TopBarActivity;
+import com.xapp.jjh.xui.bean.BaseMenuItem;
 import com.xapp.jjh.xui.inter.MenuType;
+import com.xapp.jjh.xui.inter.OnMenuItemClickListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PlayerActivity extends TopBarActivity implements OnPreparedListener, OnPlayInfoListener, OnErrorListener, OnSeekCompleteListener, OnCompletionListener, OnSlideHandleListener {
@@ -104,19 +110,40 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
         /** 播放指定的资源*/
         mVideoPlayer.play(url);
 //        mVideoPlayer.play("http://172.16.218.64:8080/batamu.mp4");
-        setMenuType(MenuType.TEXT,R.string.play_info_hidden);
+//        mVideoPlayer.play("http://172.16.218.64:8080/batamu.avi");
+//        mVideoPlayer.play("http://172.16.218.64:8080/batamu_0.avi");
+//        mVideoPlayer.play("http://172.16.218.64:8080/batamu_1.avi");
+//        mVideoPlayer.play("http://172.16.218.64:8080/jufengtianwang.rmvb");
+//        mVideoPlayer.play("http://172.16.218.64:8080/fuermosi.rmvb");
+//        mVideoPlayer.play("http://172.16.218.64:8080/yoohoo.mp4");
+//        mVideoPlayer.play("http://172.16.218.64:8080/zhudike.mkv");
+//        mVideoPlayer.play("http://172.16.218.64:8080/1471922566442.ts");
+//        mVideoPlayer.play("http://172.16.218.64:8080/1471922566800.ts");
+//        mVideoPlayer.play("http://172.16.218.64:8080/1471922567129.ts");
+        setMenuType(MenuType.TEXT,R.string.setting);
     }
 
     @Override
     public void onMenuClick() {
         super.onMenuClick();
-        if(mVideoPlayer.isTableLayoutShow()){
-            mVideoPlayer.setTableLayoutState(false);
-            setMenuText(getString(R.string.play_info_show));
-        }else{
-            mVideoPlayer.setTableLayoutState(true);
-            setMenuText(getString(R.string.play_info_hidden));
-        }
+        List<PlayerMenu> list = new ArrayList<>();
+        list.add(new PlayerMenu(-1,mVideoPlayer.isTableLayoutShow()?getString(R.string.play_info_hidden):getString(R.string.play_info_show)));
+        list.add(new PlayerMenu(-1,getString(R.string.video_info)));
+        showMenuList(list, new OnMenuItemClickListener() {
+            @Override
+            public void onMenuItemClick(BaseMenuItem menuItem, int position) {
+                if(position == 0){
+                    if(mVideoPlayer.isTableLayoutShow()){
+                        mVideoPlayer.setTableLayoutState(false);
+                    }else{
+                        mVideoPlayer.setTableLayoutState(true);
+                    }
+                }else if(position == 1){
+                    mVideoPlayer.showMediaInfo();
+                }
+            }
+        });
+
     }
 
     @Override

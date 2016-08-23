@@ -182,6 +182,12 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
         }
     }
 
+    public void showMediaInfo(){
+        if(mVideoView!=null){
+            mVideoView.showMediaInfo();
+        }
+    }
+
     public boolean isUseDefaultLoadingStyle() {
         return isUseDefaultLoadingStyle;
     }
