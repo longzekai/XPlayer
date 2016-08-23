@@ -238,7 +238,7 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
             public void onClick(View v) {
                 rePlay();
                 setLoadingState(true);
-                iv_center_play.setVisibility(View.GONE);
+                setCenterPlayIconState(false);
             }
         });
         iv_screen.setOnClickListener(new OnClickListener() {
@@ -273,10 +273,18 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
     }
 
     private void updateFullScreenButton() {
-        if (getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            iv_screen.setImageResource(R.mipmap.icon_full_screen_exit);
-        } else {
-            iv_screen.setImageResource(R.mipmap.icon_full_screen);
+        if(iv_screen!=null){
+            if (getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                iv_screen.setImageResource(R.mipmap.icon_full_screen_exit);
+            } else {
+                iv_screen.setImageResource(R.mipmap.icon_full_screen);
+            }
+        }
+    }
+
+    private void setCenterPlayIconState(boolean state){
+        if(iv_center_play!=null){
+            iv_center_play.setVisibility(state?View.VISIBLE:View.GONE);
         }
     }
 
@@ -295,7 +303,7 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
     @Override
     protected void onRenderStart() {
         super.onRenderStart();
-        iv_center_play.setVisibility(View.GONE);
+        setCenterPlayIconState(false);
         setLoadingState(false);
         setPlayStateIcon(true);
         if(mSeekBar!=null){
@@ -338,7 +346,7 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
     protected void onPlayComplete() {
         super.onPlayComplete();
         mHandler.removeMessages(MSG_PLAYING);
-        iv_center_play.setVisibility(View.VISIBLE);
+        setCenterPlayIconState(true);
         setLoadingState(false);
     }
 
