@@ -1,5 +1,6 @@
 package com.xapp.jjh.xplayer;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Environment;
@@ -23,6 +24,9 @@ import com.xapp.jjh.xui.inter.DialogCallBack;
 import com.xapp.jjh.xui.inter.MenuType;
 import com.xapp.jjh.xui.inter.OnMenuItemClickListener;
 import com.xapp.jjh.xui.inter.PageState;
+import com.xapp.jjh.xui.lib.permissiongen.PermissionFail;
+import com.xapp.jjh.xui.lib.permissiongen.PermissionGen;
+import com.xapp.jjh.xui.lib.permissiongen.PermissionSuccess;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,6 +82,22 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
         setSwipeBackEnable(false);
         setTopBarTitle("视频列表");
         mRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false));
+        PermissionGen.with(HomeActivity.this)
+                .addRequestCode(100)
+                .permissions(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .request();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        PermissionGen.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+    }
+
+    @PermissionSuccess(requestCode = 100)
+    public void doSomething(){
         setPageState(PageState.LOADING);
         new Thread(){
             @Override
@@ -88,6 +108,11 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
                 mHandler.sendEmptyMessage(MSG_LOAD_OVER);
             }
         }.start();
+    }
+
+    @PermissionFail(requestCode = 100)
+    public void doFailSomething(){
+        showSnackBar("Permission Deny !",null,null);
     }
 
     public class MCompartor implements Comparator<VideoInfo>{

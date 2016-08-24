@@ -117,6 +117,9 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
 //        mVideoPlayer.play("http://172.16.218.64:8080/fuermosi.rmvb");
 //        mVideoPlayer.play("http://172.16.218.64:8080/yoohoo.mp4");
 //        mVideoPlayer.play("http://172.16.218.64:8080/zhudike.mkv");
+//        mVideoPlayer.play("http://172.16.218.64:8080/story1.mp4");
+//        mVideoPlayer.play("http://172.16.218.64:8080/luzaihefang.mp4");
+//        mVideoPlayer.play("http://172.16.218.64:8080/xionger.ts");
 //        mVideoPlayer.play("http://172.16.218.64:8080/1471922566442.ts");
 //        mVideoPlayer.play("http://172.16.218.64:8080/1471922566800.ts");
 //        mVideoPlayer.play("http://172.16.218.64:8080/1471922567129.ts");
