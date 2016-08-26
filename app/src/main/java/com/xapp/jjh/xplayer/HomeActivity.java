@@ -8,11 +8,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.xapp.jjh.xplayer.adapter.VideoListAdapter;
 import com.xapp.jjh.xplayer.bean.PlayerMenu;
@@ -41,6 +44,10 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
     private String TAG = "HomeActivity";
     private RecyclerView mRecycler;
     private List<VideoInfo> mList = new ArrayList<>();
+
+    private View ll_input;
+    private EditText et_url;
+    private TextView tv_play;
 
     private int decode_mode = 0;
 
@@ -73,6 +80,9 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
     @Override
     public void findViewById() {
         mRecycler = findView(R.id.recycler);
+        ll_input = findView(R.id.ll_input);
+        et_url = findView(R.id.et_url);
+        tv_play = findView(R.id.tv_play);
     }
 
     @Override
@@ -131,6 +141,7 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
     @Override
     public void setListener() {
         super.setListener();
+        tv_play.setOnClickListener(this);
 //        mRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 //            @Override
 //            public void onGlobalLayout() {
@@ -156,14 +167,38 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
         menuList.add(new PlayerMenu(PlayerMenu.DECODE_MODE_CODE_SOFT,-1,"软解码"));
         menuList.add(new PlayerMenu(PlayerMenu.DECODE_MODE_CODE_HARD,-1,"硬解码"));
         menuList.add(new PlayerMenu(PlayerMenu.DECODE_MODE_CODE_MEDIA_PLAYER,-1,"原生解码"));
+        menuList.add(new PlayerMenu(PlayerMenu.DECODE_MODE_NOT_SETTING,-1,ll_input.getVisibility()==View.VISIBLE?"隐藏输入框":"显示输入框"));
         showMenuList(menuList, new OnMenuItemClickListener() {
             @Override
             public void onMenuItemClick(BaseMenuItem menuItem, int position) {
                 PlayerMenu menu = (PlayerMenu) menuItem;
-                decode_mode = menu.getDecodeModeCode();
-                setMenuText(menu.getItemText());
+                if(menu.getDecodeModeCode()!=-1){
+                    decode_mode = menu.getDecodeModeCode();
+                    setMenuText(menu.getItemText());
+                }else{
+                    int state = ll_input.getVisibility() == View.VISIBLE?View.GONE:View.VISIBLE;
+                    ll_input.setVisibility(state);
+                }
+
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+        switch (v.getId()){
+            case R.id.tv_play:
+                String url = et_url.getText().toString();
+                if(TextUtils.isEmpty(url))
+                    return;
+                Intent intent = new Intent(getApplicationContext(),PlayerActivity.class);
+                intent.putExtra("path",url);
+                intent.putExtra("name",url);
+                intent.putExtra("decode_mode",decode_mode);
+                startActivity(intent);
+                break;
+        }
     }
 
     @Override

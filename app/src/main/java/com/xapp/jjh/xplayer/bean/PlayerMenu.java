@@ -10,6 +10,7 @@ import com.xapp.jjh.xui.bean.BaseMenuItem;
  */
 public class PlayerMenu extends BaseMenuItem {
 
+    public static final int DECODE_MODE_NOT_SETTING = -1;
     public static final int DECODE_MODE_CODE_SOFT = 0;
     public static final int DECODE_MODE_CODE_HARD = 1;
     public static final int DECODE_MODE_CODE_MEDIA_PLAYER = 2;

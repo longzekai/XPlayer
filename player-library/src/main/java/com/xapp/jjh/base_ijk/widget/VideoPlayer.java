@@ -77,6 +77,7 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
             }
         }
     };
+    private boolean isLive;
 
     public VideoPlayer(Context context) {
         super(context);
@@ -162,6 +163,14 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
                 mVideoView.setUsingMediaCodec(true);
             }
         }
+    }
+
+    public void setLiveState(boolean state){
+        this.isLive = state;
+    }
+
+    public boolean isLive(){
+        return isLive;
     }
 
     protected void initPlayer(Context context) {
@@ -342,7 +351,9 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
     }
 
     protected void onRenderStart() {
-
+        if(getDuration()<=0){
+            setLiveState(true);
+        }
     }
 
     private void preparedMediaPlayer(IMediaPlayer mediaPlayer) {

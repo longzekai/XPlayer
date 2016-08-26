@@ -113,6 +113,9 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
 //        mVideoPlayer.play("http://172.16.218.64:8080/batamu.avi");
 //        mVideoPlayer.play("http://172.16.218.64:8080/batamu_0.avi");
 //        mVideoPlayer.play("http://172.16.218.64:8080/batamu_1.avi");
+//        mVideoPlayer.play("http://172.16.218.64:8080/batamu_trans.mp4");
+//        mVideoPlayer.play("http://172.16.218.64:8080/batamu_trans01.mp4");
+//        mVideoPlayer.play("http://172.16.218.64:8080/batamu_trans11.mp4");
 //        mVideoPlayer.play("http://172.16.218.64:8080/jufengtianwang.rmvb");
 //        mVideoPlayer.play("http://172.16.218.64:8080/fuermosi.rmvb");
 //        mVideoPlayer.play("http://172.16.218.64:8080/yoohoo.mp4");
@@ -123,6 +126,8 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
 //        mVideoPlayer.play("http://172.16.218.64:8080/1471922566442.ts");
 //        mVideoPlayer.play("http://172.16.218.64:8080/1471922566800.ts");
 //        mVideoPlayer.play("http://172.16.218.64:8080/1471922567129.ts");
+//        mVideoPlayer.play("rtsp://218.204.223.237:554/live/1/66251FC11353191F/e7ooqwcfbqjoo80j.sdp");
+//        mVideoPlayer.play("rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov");
         setMenuType(MenuType.TEXT,R.string.setting);
     }
 

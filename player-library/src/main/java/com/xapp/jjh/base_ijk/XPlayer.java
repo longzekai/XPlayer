@@ -313,6 +313,11 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
         setLoadingState(false);
         setPlayStateIcon(true);
         if(mSeekBar!=null){
+            if(isLive()){
+                mSeekBar.setEnabled(false);
+            }else{
+                mSeekBar.setEnabled(true);
+            }
             mSeekBar.setMax(getDuration());
         }
         mHandler.sendEmptyMessageDelayed(MSG_PLAYING,1000);
@@ -538,6 +543,9 @@ public class XPlayer extends VideoPlayer implements IExtendHandle{
     private void onHorizontalProgressSlide(float percent) {
         if(mOnSlideHandleListener!=null){
             mOnSlideHandleListener.onHorizontalSlide(percent);
+        }
+        if(isLive()){
+            return;
         }
         long position = getCurrentPosition();
         long duration = getDuration();
