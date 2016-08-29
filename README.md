@@ -3,6 +3,9 @@ XPlayer
 [Demo apk下载](http://fir.im/j2af)
 use
 ====
+In this App,load phone storage all video files based on [MediaLoader](https://github.com/jiajunhui/MediaLoader)
+<br>
+<br>
 ```java
 /** 设置解码模式*/
 mVideoPlayer.setDecodeMode(DecodeMode.HARD);
