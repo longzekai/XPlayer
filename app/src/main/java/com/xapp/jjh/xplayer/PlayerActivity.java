@@ -1,17 +1,13 @@
 package com.xapp.jjh.xplayer;
 
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-
 import com.xapp.jjh.base_ijk.XPlayer;
-import com.xapp.jjh.base_ijk.config.DecodeMode;
 import com.xapp.jjh.base_ijk.config.ViewType;
 import com.xapp.jjh.base_ijk.listener.OnCompletionListener;
 import com.xapp.jjh.base_ijk.listener.OnErrorListener;
@@ -25,7 +21,6 @@ import com.xapp.jjh.xui.activity.TopBarActivity;
 import com.xapp.jjh.xui.bean.BaseMenuItem;
 import com.xapp.jjh.xui.inter.MenuType;
 import com.xapp.jjh.xui.inter.OnMenuItemClickListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,10 +36,7 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
         super.parseIntent();
         url = getIntent().getStringExtra("path");
         if(TextUtils.isEmpty(url)){
-            Uri uri = getIntent().getData();
-            if(uri!=null){
-                url  = uri.getPath();
-            }
+            url = getIntent().getDataString();
         }
     }
 

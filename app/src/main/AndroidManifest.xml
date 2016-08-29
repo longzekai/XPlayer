@@ -34,10 +34,10 @@
             android:theme="@style/XUIBaseNoTransTheme"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="sensor">
-            <intent-filter >
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
+                <data android:mimeType="video/*" />
                 <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="video/*" android:scheme="file"/>
             </intent-filter>
         </activity>
     </application>
