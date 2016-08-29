@@ -617,7 +617,7 @@ public class VideoPlayer extends FrameLayout implements IVideoPlayer, ViewTreeOb
     public void play(String url) {
         Log.d(TAG,"url : " + url);
         this.mUrl = url;
-        if(hasLoadLibrary && mVideoView!=null){
+        if(hasLoadLibrary && mVideoView!=null && !TextUtils.isEmpty(url)){
             mVideoView.setVideoPath(url);
             mVideoView.start();
         }

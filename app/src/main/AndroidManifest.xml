@@ -33,7 +33,13 @@
             android:name=".PlayerActivity"
             android:theme="@style/XUIBaseNoTransTheme"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="sensor"/>
+            android:screenOrientation="sensor">
+            <intent-filter >
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="video/*" android:scheme="file"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

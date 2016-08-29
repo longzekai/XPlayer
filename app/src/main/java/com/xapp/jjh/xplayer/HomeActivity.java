@@ -3,24 +3,21 @@ package com.xapp.jjh.xplayer;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.TextView;
-
+import com.jiajunhui.xapp.medialoader.bean.VideoItem;
+import com.jiajunhui.xapp.medialoader.callback.OnVideoLoaderCallBack;
+import com.jiajunhui.xapp.medialoader.loader.MediaLoader;
 import com.xapp.jjh.xplayer.adapter.VideoListAdapter;
 import com.xapp.jjh.xplayer.bean.PlayerMenu;
-import com.xapp.jjh.xplayer.bean.VideoInfo;
-import com.xapp.jjh.xplayer.utils.VideoUtils;
 import com.xapp.jjh.xui.activity.TopBarActivity;
 import com.xapp.jjh.xui.bean.BaseMenuItem;
 import com.xapp.jjh.xui.inter.DialogCallBack;
@@ -30,7 +27,6 @@ import com.xapp.jjh.xui.inter.PageState;
 import com.xapp.jjh.xui.lib.permissiongen.PermissionFail;
 import com.xapp.jjh.xui.lib.permissiongen.PermissionGen;
 import com.xapp.jjh.xui.lib.permissiongen.PermissionSuccess;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,7 +39,7 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
 
     private String TAG = "HomeActivity";
     private RecyclerView mRecycler;
-    private List<VideoInfo> mList = new ArrayList<>();
+    private List<VideoItem> mList = new ArrayList<>();
 
     private View ll_input;
     private EditText et_url;
@@ -109,15 +105,14 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
     @PermissionSuccess(requestCode = 100)
     public void doSomething(){
         setPageState(PageState.LOADING);
-        new Thread(){
+        MediaLoader.loadVideos(this, new OnVideoLoaderCallBack() {
             @Override
-            public void run() {
-                super.run();
-                VideoUtils.getVideos(mList, Environment.getExternalStorageDirectory());
+            public void onResultList(List<VideoItem> list) {
+                mList = list;
                 Collections.sort(mList,new MCompartor());
                 mHandler.sendEmptyMessage(MSG_LOAD_OVER);
             }
-        }.start();
+        });
     }
 
     @PermissionFail(requestCode = 100)
@@ -125,9 +120,9 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
         showSnackBar("Permission Deny !",null,null);
     }
 
-    public class MCompartor implements Comparator<VideoInfo>{
+    public class MCompartor implements Comparator<VideoItem>{
         @Override
-        public int compare(VideoInfo lhs, VideoInfo rhs) {
+        public int compare(VideoItem lhs, VideoItem rhs) {
             if(lhs.getSize()>rhs.getSize()){
                 return -1;
             }
@@ -142,12 +137,6 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
     public void setListener() {
         super.setListener();
         tv_play.setOnClickListener(this);
-//        mRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                Log.d(TAG,"Home onGlobalLayout ......");
-//            }
-//        });
     }
 
     @Override

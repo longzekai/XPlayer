@@ -1,7 +1,9 @@
 package com.xapp.jjh.xplayer;
 
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +40,12 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
     public void parseIntent() {
         super.parseIntent();
         url = getIntent().getStringExtra("path");
+        if(TextUtils.isEmpty(url)){
+            Uri uri = getIntent().getData();
+            if(uri!=null){
+                url  = uri.getPath();
+            }
+        }
     }
 
     @Override
@@ -67,12 +75,6 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
                 quitFullScreen();
             }
         });
-//        mRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                Log.d(TAG,"onGlobalLayout");
-//            }
-//        });
 
         /** 设置准备完成的监听器*/
         mVideoPlayer.setOnPreparedListener(this);
