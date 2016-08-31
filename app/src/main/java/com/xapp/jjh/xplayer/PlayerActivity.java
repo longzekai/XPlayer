@@ -1,6 +1,5 @@
 package com.xapp.jjh.xplayer;
 
-import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.text.TextUtils;
@@ -61,10 +60,13 @@ public class PlayerActivity extends TopBarActivity implements OnErrorListener, O
         mXPlayer.setViewType(ViewType.SURFACEVIEW);
         /** 是否显示播放帧率等信息*/
         mXPlayer.showTableLayout();
+        /** 播放事件监听*/
         mXPlayer.setOnPlayerEventListener(this);
+        /** 播放错误监听*/
         mXPlayer.setOnErrorListener(this);
         /** 播放指定的资源*/
         mXPlayer.setData(url);
+        /** 启动播放*/
         mXPlayer.start();
         setMenuType(MenuType.TEXT,R.string.setting);
     }
@@ -93,14 +95,8 @@ public class PlayerActivity extends TopBarActivity implements OnErrorListener, O
     }
 
     @Override
-    public void onConfigurationChanged(final Configuration newConfig) {
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        Log.d(TAG,"onConfigurationChanged ... ... ...");
-        doConfigChanged(newConfig);
-    }
-
-    @SuppressLint("NewApi")
-    private void doConfigChanged(final Configuration newConfig) {
         if(mXPlayer !=null){
             Log.d(TAG,"doConfigChanged ... ... ...");
             mXPlayer.doConfigChange(newConfig);
