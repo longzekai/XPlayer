@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     tools:context=".PlayerActivity">
 
-    <com.xapp.jjh.base_ijk.XPlayer
+    <com.xapp.jjh.base_ijk.widget.XPlayer
         android:id="@+id/player"
         android:layout_width="match_parent"
         android:layout_height="200dp"

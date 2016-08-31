@@ -1,21 +1,17 @@
 package com.xapp.jjh.xplayer;
 
+import android.annotation.SuppressLint;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.xapp.jjh.base_ijk.XPlayer;
 import com.xapp.jjh.base_ijk.config.ViewType;
-import com.xapp.jjh.base_ijk.listener.OnCompletionListener;
-import com.xapp.jjh.base_ijk.listener.OnErrorListener;
-import com.xapp.jjh.base_ijk.listener.OnPlayInfoListener;
-import com.xapp.jjh.base_ijk.listener.OnPreparedListener;
-import com.xapp.jjh.base_ijk.listener.OnScreenChangeListener;
-import com.xapp.jjh.base_ijk.listener.OnSeekCompleteListener;
-import com.xapp.jjh.base_ijk.listener.OnSlideHandleListener;
+import com.xapp.jjh.base_ijk.inter.OnErrorListener;
+import com.xapp.jjh.base_ijk.inter.OnPlayerEventListener;
+import com.xapp.jjh.base_ijk.widget.XPlayer;
 import com.xapp.jjh.xplayer.bean.PlayerMenu;
 import com.xapp.jjh.xui.activity.TopBarActivity;
 import com.xapp.jjh.xui.bean.BaseMenuItem;
@@ -25,15 +21,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PlayerActivity extends TopBarActivity implements OnPreparedListener, OnPlayInfoListener, OnErrorListener, OnSeekCompleteListener, OnCompletionListener, OnSlideHandleListener {
+public class PlayerActivity extends TopBarActivity implements OnErrorListener, OnPlayerEventListener {
 
     private String TAG = "PlayerActivity";
-    private XPlayer mVideoPlayer;
+    private XPlayer mXPlayer;
     private String url;
 
     @Override
     public void parseIntent() {
         super.parseIntent();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         url = getIntent().getStringExtra("path");
         if(TextUtils.isEmpty(url)){
             url = getIntent().getDataString();
@@ -46,44 +43,11 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
     }
 
     public void setListener() {
-        mVideoPlayer.setOnScreenChangeListener(new OnScreenChangeListener() {
-            @Override
-            public void onLandScape() {
 
-            }
-
-            @Override
-            public void onPortrait() {
-
-            }
-
-            @Override
-            public void onFullScreen() {
-                fullScreen();
-            }
-
-            @Override
-            public void onQuitFullScreen() {
-                quitFullScreen();
-            }
-        });
-
-        /** 设置准备完成的监听器*/
-        mVideoPlayer.setOnPreparedListener(this);
-        /** 设置播放信息监听器*/
-        mVideoPlayer.setOnPlayerInfoListener(this);
-        /** 设置错误信息监听器*/
-        mVideoPlayer.setOnErrorListener(this);
-        /** 设置定位完成的监听器*/
-        mVideoPlayer.setOnSeekCompleteListener(this);
-        /** 设置播放完成的监听器*/
-        mVideoPlayer.setOnCompletionListener(this);
-        /** 设置滑动手势监听器*/
-        mVideoPlayer.setOnSlideHandleListener(this);
     }
 
     public void findViewById() {
-        mVideoPlayer = findView(R.id.player);
+        mXPlayer = findView(R.id.player);
     }
 
     @Override
@@ -92,36 +56,16 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
         setTopBarTitle(getIntent().getStringExtra("name"));
         int decodeMode = getIntent().getIntExtra("decode_mode",0);
         /** 设置解码模式*/
-        mVideoPlayer.setDecodeMode(new PlayerMenu().getDecodeMode(decodeMode));
+        mXPlayer.setDecodeMode(new PlayerMenu().getDecodeMode(decodeMode));
         /** 设置渲染视图类型*/
-        mVideoPlayer.setViewType(ViewType.SURFACEVIEW);
-        /** 是否使用默认的播放控制器*/
-        mVideoPlayer.useDefaultPlayControl(true);
+        mXPlayer.setViewType(ViewType.SURFACEVIEW);
         /** 是否显示播放帧率等信息*/
-        mVideoPlayer.showTableLayout();
-        /** 是否使用默认的加载样式*/
-        mVideoPlayer.setUseDefaultLoadingStyle(true);
+        mXPlayer.showTableLayout();
+        mXPlayer.setOnPlayerEventListener(this);
+        mXPlayer.setOnErrorListener(this);
         /** 播放指定的资源*/
-        mVideoPlayer.play(url);
-//        mVideoPlayer.play("http://172.16.218.64:8080/batamu.mp4");
-//        mVideoPlayer.play("http://172.16.218.64:8080/batamu.avi");
-//        mVideoPlayer.play("http://172.16.218.64:8080/batamu_0.avi");
-//        mVideoPlayer.play("http://172.16.218.64:8080/batamu_1.avi");
-//        mVideoPlayer.play("http://172.16.218.64:8080/batamu_trans.mp4");
-//        mVideoPlayer.play("http://172.16.218.64:8080/batamu_trans01.mp4");
-//        mVideoPlayer.play("http://172.16.218.64:8080/batamu_trans11.mp4");
-//        mVideoPlayer.play("http://172.16.218.64:8080/jufengtianwang.rmvb");
-//        mVideoPlayer.play("http://172.16.218.64:8080/fuermosi.rmvb");
-//        mVideoPlayer.play("http://172.16.218.64:8080/yoohoo.mp4");
-//        mVideoPlayer.play("http://172.16.218.64:8080/zhudike.mkv");
-//        mVideoPlayer.play("http://172.16.218.64:8080/story1.mp4");
-//        mVideoPlayer.play("http://172.16.218.64:8080/luzaihefang.mp4");
-//        mVideoPlayer.play("http://172.16.218.64:8080/xionger.ts");
-//        mVideoPlayer.play("http://172.16.218.64:8080/1471922566442.ts");
-//        mVideoPlayer.play("http://172.16.218.64:8080/1471922566800.ts");
-//        mVideoPlayer.play("http://172.16.218.64:8080/1471922567129.ts");
-//        mVideoPlayer.play("rtsp://218.204.223.237:554/live/1/66251FC11353191F/e7ooqwcfbqjoo80j.sdp");
-//        mVideoPlayer.play("rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov");
+        mXPlayer.setData(url);
+        mXPlayer.start();
         setMenuType(MenuType.TEXT,R.string.setting);
     }
 
@@ -129,19 +73,19 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
     public void onMenuClick() {
         super.onMenuClick();
         List<PlayerMenu> list = new ArrayList<>();
-        list.add(new PlayerMenu(-1,mVideoPlayer.isTableLayoutShow()?getString(R.string.play_info_hidden):getString(R.string.play_info_show)));
+        list.add(new PlayerMenu(-1, mXPlayer.isTableLayoutShow()?getString(R.string.play_info_hidden):getString(R.string.play_info_show)));
         list.add(new PlayerMenu(-1,getString(R.string.video_info)));
         showMenuList(list, new OnMenuItemClickListener() {
             @Override
             public void onMenuItemClick(BaseMenuItem menuItem, int position) {
                 if(position == 0){
-                    if(mVideoPlayer.isTableLayoutShow()){
-                        mVideoPlayer.setTableLayoutState(false);
+                    if(mXPlayer.isTableLayoutShow()){
+                        mXPlayer.setTableLayoutState(false);
                     }else{
-                        mVideoPlayer.setTableLayoutState(true);
+                        mXPlayer.setTableLayoutState(true);
                     }
                 }else if(position == 1){
-                    mVideoPlayer.showMediaInfo();
+                    mXPlayer.showMediaInfo();
                 }
             }
         });
@@ -149,101 +93,100 @@ public class PlayerActivity extends TopBarActivity implements OnPreparedListener
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(final Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if(mVideoPlayer!=null){
-            mVideoPlayer.doConfigChange(newConfig);
+        Log.d(TAG,"onConfigurationChanged ... ... ...");
+        doConfigChanged(newConfig);
+    }
+
+    @SuppressLint("NewApi")
+    private void doConfigChanged(final Configuration newConfig) {
+        if(mXPlayer !=null){
+            Log.d(TAG,"doConfigChanged ... ... ...");
+            mXPlayer.doConfigChange(newConfig);
         }
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        if(mVideoPlayer!=null){
-            mVideoPlayer.onDestroy();
-            mVideoPlayer = null;
+        if(mXPlayer.isFullScreen()){
+            mXPlayer.toggleFullScreen();
+        }else {
+            super.onBackPressed();
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mVideoPlayer!=null){
-            mVideoPlayer.onDestroy();
+        if(mXPlayer !=null){
+            mXPlayer.destroy();
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(mVideoPlayer!=null){
-            mVideoPlayer.resume();
+        if(mXPlayer !=null){
+            mXPlayer.resume();
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(mVideoPlayer!=null){
-            mVideoPlayer.pause();
+        if(mXPlayer !=null){
+            mXPlayer.pause();
         }
     }
 
     @Override
-    public void onPrepared() {
-        Log.d(TAG,"onPrepared");
+    public void onError(int errorCode) {
+        Log.d(TAG,"-------------------ERROR !!!--------------------");
     }
 
     @Override
-    public void onPlayerInfo(int what, int extra) {
-        Log.d(TAG,"onPlayerInfo" + what);
+    public void onPlayerEvent(int eventCode) {
+        switch (eventCode){
+            case OnPlayerEventListener.EVENT_CODE_ON_INTENT_TO_START:
+                Log.d(TAG,"EVENT_CODE_ON_INTENT_TO_START");
+                break;
+
+            case OnPlayerEventListener.EVENT_CODE_PREPARED:
+                Log.d(TAG,"EVENT_CODE_PREPARED");
+                break;
+
+            case OnPlayerEventListener.EVENT_CODE_RENDER_START:
+                Log.d(TAG,"EVENT_CODE_RENDER_START");
+                break;
+
+            case OnPlayerEventListener.EVENT_CODE_BUFFERING_START:
+                Log.d(TAG,"EVENT_CODE_BUFFERING_START");
+                break;
+
+            case OnPlayerEventListener.EVENT_CODE_BUFFERING_END:
+                Log.d(TAG,"EVENT_CODE_BUFFERING_END");
+                break;
+
+            case OnPlayerEventListener.EVENT_CODE_SEEK_COMPLETE:
+                Log.d(TAG,"EVENT_CODE_SEEK_COMPLETE");
+                break;
+
+            case OnPlayerEventListener.EVENT_CODE_PLAY_PAUSE:
+                Log.d(TAG,"EVENT_CODE_PLAY_PAUSE");
+                break;
+
+            case OnPlayerEventListener.EVENT_CODE_PLAY_RESUME:
+                Log.d(TAG,"EVENT_CODE_PLAY_RESUME");
+                break;
+
+            case OnPlayerEventListener.EVENT_CODE_PLAY_COMPLETE:
+                Log.d(TAG,"EVENT_CODE_PLAY_COMPLETE");
+                break;
+
+            case OnPlayerEventListener.EVENT_CODE_PLAYER_DESTROY:
+                Log.d(TAG,"EVENT_CODE_PLAYER_DESTROY");
+                break;
+        }
     }
-
-    @Override
-    public void onRenderStart() {
-
-    }
-
-    @Override
-    public void onBufferingStart() {
-
-    }
-
-    @Override
-    public void onBufferingEnd() {
-
-    }
-
-    @Override
-    public void onError(int what, int extra) {
-        Log.d(TAG,"onError" + what);
-        showSnackBar("Error", Snackbar.LENGTH_LONG,"OK",null);
-    }
-
-    @Override
-    public void onSeekComplete() {
-        Log.d(TAG,"onSeekComplete");
-    }
-
-    @Override
-    public void onCompletion() {
-        Log.d(TAG,"onCompletion");
-        showSnackBar("Play Complete",null,null);
-    }
-
-    @Override
-    public void onLeftVerticalSlide(float percent) {
-        System.out.println("TestSlide onLeftVerticalSlide : " + percent);
-    }
-
-    @Override
-    public void onRightVerticalSlide(float percent) {
-        System.out.println("TestSlide onRightVerticalSlide : " + percent);
-    }
-
-    @Override
-    public void onHorizontalSlide(float percent) {
-        System.out.println("TestSlide onHorizontalSlide : " + percent);
-    }
-
 }
