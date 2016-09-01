@@ -29,7 +29,6 @@ public class PlayerActivity extends TopBarActivity implements OnErrorListener, O
     @Override
     public void parseIntent() {
         super.parseIntent();
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         url = getIntent().getStringExtra("path");
         if(TextUtils.isEmpty(url)){
             url = getIntent().getDataString();
@@ -99,6 +98,11 @@ public class PlayerActivity extends TopBarActivity implements OnErrorListener, O
         super.onConfigurationChanged(newConfig);
         if(mXPlayer !=null){
             Log.d(TAG,"doConfigChanged ... ... ...");
+            if(newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
+                quitFullScreen();
+            }else{
+                fullScreen();
+            }
             mXPlayer.doConfigChange(newConfig);
         }
     }
