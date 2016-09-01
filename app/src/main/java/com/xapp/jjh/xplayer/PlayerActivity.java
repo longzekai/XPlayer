@@ -143,6 +143,7 @@ public class PlayerActivity extends TopBarActivity implements OnErrorListener, O
     @Override
     public void onError(int errorCode) {
         Log.d(TAG,"-------------------ERROR !!!--------------------");
+        showSnackBar("occur error !",null,null);
     }
 
     @Override

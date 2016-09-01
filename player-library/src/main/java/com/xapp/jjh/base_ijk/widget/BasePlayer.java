@@ -124,8 +124,18 @@ public abstract class BasePlayer extends BaseBindControllerPlayer {
     }
 
     protected void onErrorEvent(int errorCode){
+        handleErrorEvent(errorCode);
         if(mOnErrorListener!=null){
             mOnErrorListener.onError(errorCode);
+        }
+    }
+
+    private void handleErrorEvent(int errorCode) {
+        switch (errorCode){
+            case OnErrorListener.ERROR_CODE_COMMON:
+                setPlayState(false);
+                setLoadingState(false);
+                break;
         }
     }
 
