@@ -55,13 +55,12 @@ public class XPlayer extends BasePlayer{
     }
 
     @Override
-    protected void initPlayerWidget(Context context) {
+    protected View getPlayerWidget(Context context) {
         loadLibrary();
         mVideoView = new IjkVideoView(context);
         mVideoView.setBackgroundColor(Color.BLACK);
-        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
-        addView(mVideoView,params);
         initPlayerListener();
+        return mVideoView;
     }
 
     private void loadLibrary() {

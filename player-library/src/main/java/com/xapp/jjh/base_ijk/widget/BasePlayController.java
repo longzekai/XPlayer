@@ -105,7 +105,12 @@ public abstract class BasePlayController extends FrameLayout implements IControl
 
     protected abstract void bindController(Context context);
 
-    protected abstract void initPlayerWidget(Context context);
+    private void initPlayerWidget(Context context){
+        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
+        addView(getPlayerWidget(context),params);
+    }
+
+    protected abstract View getPlayerWidget(Context context);
 
     protected void initSystemInfo() {
         DisplayMetrics dm = new DisplayMetrics();

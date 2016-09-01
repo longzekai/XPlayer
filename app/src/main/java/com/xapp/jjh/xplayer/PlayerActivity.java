@@ -182,6 +182,7 @@ public class PlayerActivity extends TopBarActivity implements OnErrorListener, O
 
             case OnPlayerEventListener.EVENT_CODE_PLAY_COMPLETE:
                 Log.d(TAG,"EVENT_CODE_PLAY_COMPLETE");
+                showSnackBar("Play Complete",null,null);
                 break;
 
             case OnPlayerEventListener.EVENT_CODE_PLAYER_DESTROY:
