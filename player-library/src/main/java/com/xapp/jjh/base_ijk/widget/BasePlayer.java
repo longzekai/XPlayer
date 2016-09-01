@@ -59,6 +59,15 @@ public abstract class BasePlayer extends BaseBindControllerPlayer {
         this.mViewType = mViewType;
     }
 
+    public boolean isLive() {
+        return isLive;
+    }
+
+    public void setLive(boolean live) {
+        isLive = live;
+        setLiveState(isLive);
+    }
+
     public void setOnPlayerEventListener(OnPlayerEventListener onPlayerEventListener) {
         this.mOnPlayerEventListener = onPlayerEventListener;
     }
@@ -89,9 +98,7 @@ public abstract class BasePlayer extends BaseBindControllerPlayer {
                 break;
 
             case OnPlayerEventListener.EVENT_CODE_RENDER_START:
-                isLive = (getDuration() <= 0);
-                setSeekBarEnable(!isLive);
-                setLiveState(isLive);
+                setSeekBarEnable(!(getDuration() <= 0));
                 sendPlayingMsg();
                 setLoadingState(false);
                 setPlayState(true);
@@ -146,7 +153,7 @@ public abstract class BasePlayer extends BaseBindControllerPlayer {
 
     @Override
     public void horizontalSlide(float percent) {
-        if(isLive)
+        if(getDuration()<=0)
             return;
         super.horizontalSlide(percent);
     }
