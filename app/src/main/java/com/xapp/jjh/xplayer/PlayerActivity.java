@@ -12,6 +12,7 @@ import com.xapp.jjh.base_ijk.inter.OnErrorListener;
 import com.xapp.jjh.base_ijk.inter.OnPlayerEventListener;
 import com.xapp.jjh.base_ijk.widget.XPlayer;
 import com.xapp.jjh.xplayer.bean.PlayerMenu;
+import com.xapp.jjh.xplayer.utils.UriGetPath;
 import com.xapp.jjh.xui.activity.TopBarActivity;
 import com.xapp.jjh.xui.bean.BaseMenuItem;
 import com.xapp.jjh.xui.inter.MenuType;
@@ -31,7 +32,9 @@ public class PlayerActivity extends TopBarActivity implements OnErrorListener, O
         super.parseIntent();
         url = getIntent().getStringExtra("path");
         if(TextUtils.isEmpty(url)){
-            url = getIntent().getDataString();
+            url = UriGetPath.getPath(getApplicationContext(),getIntent().getData());
+            setTopBarTitle(url);
+            Log.d(TAG,"url:" + url);
         }
     }
 
