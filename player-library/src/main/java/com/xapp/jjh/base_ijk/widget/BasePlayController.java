@@ -36,6 +36,7 @@ public abstract class BasePlayController extends FrameLayout implements IControl
     private SeekBar mSeekBar;
     private TextView mTvPlayTime;
     private TextView mTvSystemTime;
+    private TextView mTvLive;
     private View mTouchLayout;
 
     private boolean mGestureEnable = true;
@@ -135,6 +136,7 @@ public abstract class BasePlayController extends FrameLayout implements IControl
         mSeekBar = (SeekBar) view.findViewById(R.id.seek_bar);
         mTvPlayTime = (TextView) view.findViewById(R.id.tv_play_time);
         mTvSystemTime = (TextView) view.findViewById(R.id.tv_system_time);
+        mTvLive = (TextView) view.findViewById(R.id.tv_live_mark);
         addView(view,params);
         addListener();
     }
@@ -265,6 +267,11 @@ public abstract class BasePlayController extends FrameLayout implements IControl
     }
 
     @Override
+    public void setLiveState(boolean state) {
+        mTvLive.setVisibility(state?View.VISIBLE:View.GONE);
+    }
+
+    @Override
     public void setPlayState(boolean isPlaying) {
         mIvPlayStateIcon.setImageResource(isPlaying?R.mipmap.ic_video_player_btn_pause:R.mipmap.ic_video_player_btn_play);
     }
@@ -272,6 +279,11 @@ public abstract class BasePlayController extends FrameLayout implements IControl
     @Override
     public void setPlayTime(long curr, long total) {
         mTvPlayTime.setText(TimeUtil.getTime(curr) + "/" + TimeUtil.getTime(total));
+    }
+
+    @Override
+    public void setSeekBarEnable(boolean enable) {
+        mSeekBar.setEnabled(enable);
     }
 
     @Override

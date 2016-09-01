@@ -15,7 +15,9 @@ public interface IController {
     void setSystemTime();
     void setLoadingState(boolean state);
     void setPlayState(boolean isPlaying);
+    void setLiveState(boolean state);
     void setPlayTime(long curr, long total);
+    void setSeekBarEnable(boolean enable);
     void setSeekMax(int max);
     void setSeekProgress(int progress);
     void setSeekSecondProgress(int progress);

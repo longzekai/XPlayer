@@ -21,6 +21,8 @@ public abstract class BasePlayer extends BaseBindControllerPlayer {
 
     protected int startSeekPos = -1;
 
+    protected boolean isLive = false;
+
     public BasePlayer(Context context) {
         super(context);
     }
@@ -87,6 +89,9 @@ public abstract class BasePlayer extends BaseBindControllerPlayer {
                 break;
 
             case OnPlayerEventListener.EVENT_CODE_RENDER_START:
+                isLive = (getDuration() <= 0);
+                setSeekBarEnable(!isLive);
+                setLiveState(isLive);
                 sendPlayingMsg();
                 setLoadingState(false);
                 setPlayState(true);
@@ -137,6 +142,13 @@ public abstract class BasePlayer extends BaseBindControllerPlayer {
                 setLoadingState(false);
                 break;
         }
+    }
+
+    @Override
+    public void horizontalSlide(float percent) {
+        if(isLive)
+            return;
+        super.horizontalSlide(percent);
     }
 
     @Override
