@@ -49,7 +49,6 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
-
 import tv.danmaku.ijk.media.player.annotations.AccessedByNative;
 import tv.danmaku.ijk.media.player.annotations.CalledByNative;
 import tv.danmaku.ijk.media.player.misc.IMediaDataSource;
@@ -59,7 +58,7 @@ import tv.danmaku.ijk.media.player.pragma.DebugLog;
 
 /**
  * @author bbcallen
- * 
+ *
  *         Java wrapper of ffplay.
  */
 public final class IjkMediaPlayer extends AbstractMediaPlayer {
@@ -234,13 +233,13 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
     /**
      * Sets the {@link SurfaceHolder} to use for displaying the video portion of
      * the media.
-     * 
+     *
      * Either a surface holder or surface must be set if a display or video sink
      * is needed. Not calling this method or {@link #setSurface(Surface)} when
      * playing back a video will result in only the audio track being played. A
      * null surface holder or surface will result in only the audio track being
      * played.
-     * 
+     *
      * @param sh
      *            the SurfaceHolder to use for video display
      */
@@ -263,7 +262,7 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
      * does not support {@link #setScreenOnWhilePlaying(boolean)}. Setting a
      * Surface will un-set any Surface or SurfaceHolder that was previously set.
      * A null surface will result in only the audio track being played.
-     * 
+     *
      * If the Surface sends frames to a {@link SurfaceTexture}, the timestamps
      * returned from {@link SurfaceTexture#getTimestamp()} will have an
      * unspecified zero point. These timestamps cannot be directly compared
@@ -271,7 +270,7 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
      * source, or multiple runs of the same program. The timestamp is normally
      * monotonically increasing and is unaffected by time-of-day adjustments,
      * but it is reset when the position is set.
-     * 
+     *
      * @param surface
      *            The {@link Surface} to be used for the video portion of the
      *            media.
@@ -361,13 +360,13 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
 
     /**
      * Sets the data source (file-path or http/rtsp URL) to use.
-     * 
+     *
      * @param path
      *            the path of the file, or the http/rtsp URL of the stream you
      *            want to play
      * @throws IllegalStateException
      *             if it is called in an invalid state
-     * 
+     *
      *             <p>
      *             When <code>path</code> refers to a local file, the file may
      *             actually be opened by a process other than the calling
@@ -403,6 +402,7 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
                     sb.append(entry.getValue());
                 sb.append("\r\n");
                 setOption(OPT_CATEGORY_FORMAT, "headers", sb.toString());
+                setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "protocol_whitelist", "async,cache,crypto,file,http,https,ijkhttphook,ijkinject,ijklivehook,ijklongurl,ijksegment,ijktcphook,pipe,rtp,tcp,tls,udp,ijkurlhook,data");
             }
         }
         setDataSource(path);
@@ -880,78 +880,78 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
             }
 
             switch (msg.what) {
-            case MEDIA_PREPARED:
-                player.notifyOnPrepared();
-                return;
+                case MEDIA_PREPARED:
+                    player.notifyOnPrepared();
+                    return;
 
-            case MEDIA_PLAYBACK_COMPLETE:
-                player.stayAwake(false);
-                player.notifyOnCompletion();
-                return;
-
-            case MEDIA_BUFFERING_UPDATE:
-                long bufferPosition = msg.arg1;
-                if (bufferPosition < 0) {
-                    bufferPosition = 0;
-                }
-
-                long percent = 0;
-                long duration = player.getDuration();
-                if (duration > 0) {
-                    percent = bufferPosition * 100 / duration;
-                }
-                if (percent >= 100) {
-                    percent = 100;
-                }
-
-                // DebugLog.efmt(TAG, "Buffer (%d%%) %d/%d",  percent, bufferPosition, duration);
-                player.notifyOnBufferingUpdate((int)percent);
-                return;
-
-            case MEDIA_SEEK_COMPLETE:
-                player.notifyOnSeekComplete();
-                return;
-
-            case MEDIA_SET_VIDEO_SIZE:
-                player.mVideoWidth = msg.arg1;
-                player.mVideoHeight = msg.arg2;
-                player.notifyOnVideoSizeChanged(player.mVideoWidth, player.mVideoHeight,
-                        player.mVideoSarNum, player.mVideoSarDen);
-                return;
-
-            case MEDIA_ERROR:
-                DebugLog.e(TAG, "Error (" + msg.arg1 + "," + msg.arg2 + ")");
-                if (!player.notifyOnError(msg.arg1, msg.arg2)) {
+                case MEDIA_PLAYBACK_COMPLETE:
+                    player.stayAwake(false);
                     player.notifyOnCompletion();
-                }
-                player.stayAwake(false);
-                return;
+                    return;
 
-            case MEDIA_INFO:
-                switch (msg.arg1) {
-                    case MEDIA_INFO_VIDEO_RENDERING_START:
-                        DebugLog.i(TAG, "Info: MEDIA_INFO_VIDEO_RENDERING_START\n");
-                        break;
-                }
-                player.notifyOnInfo(msg.arg1, msg.arg2);
-                // No real default action so far.
-                return;
-            case MEDIA_TIMED_TEXT:
-                // do nothing
-                break;
+                case MEDIA_BUFFERING_UPDATE:
+                    long bufferPosition = msg.arg1;
+                    if (bufferPosition < 0) {
+                        bufferPosition = 0;
+                    }
 
-            case MEDIA_NOP: // interface test message - ignore
-                break;
+                    long percent = 0;
+                    long duration = player.getDuration();
+                    if (duration > 0) {
+                        percent = bufferPosition * 100 / duration;
+                    }
+                    if (percent >= 100) {
+                        percent = 100;
+                    }
 
-            case MEDIA_SET_VIDEO_SAR:
-                player.mVideoSarNum = msg.arg1;
-                player.mVideoSarDen = msg.arg2;
-                player.notifyOnVideoSizeChanged(player.mVideoWidth, player.mVideoHeight,
-                        player.mVideoSarNum, player.mVideoSarDen);
-                break;
+                    // DebugLog.efmt(TAG, "Buffer (%d%%) %d/%d",  percent, bufferPosition, duration);
+                    player.notifyOnBufferingUpdate((int)percent);
+                    return;
 
-            default:
-                DebugLog.e(TAG, "Unknown message type " + msg.what);
+                case MEDIA_SEEK_COMPLETE:
+                    player.notifyOnSeekComplete();
+                    return;
+
+                case MEDIA_SET_VIDEO_SIZE:
+                    player.mVideoWidth = msg.arg1;
+                    player.mVideoHeight = msg.arg2;
+                    player.notifyOnVideoSizeChanged(player.mVideoWidth, player.mVideoHeight,
+                            player.mVideoSarNum, player.mVideoSarDen);
+                    return;
+
+                case MEDIA_ERROR:
+                    DebugLog.e(TAG, "Error (" + msg.arg1 + "," + msg.arg2 + ")");
+                    if (!player.notifyOnError(msg.arg1, msg.arg2)) {
+                        player.notifyOnCompletion();
+                    }
+                    player.stayAwake(false);
+                    return;
+
+                case MEDIA_INFO:
+                    switch (msg.arg1) {
+                        case MEDIA_INFO_VIDEO_RENDERING_START:
+                            DebugLog.i(TAG, "Info: MEDIA_INFO_VIDEO_RENDERING_START\n");
+                            break;
+                    }
+                    player.notifyOnInfo(msg.arg1, msg.arg2);
+                    // No real default action so far.
+                    return;
+                case MEDIA_TIMED_TEXT:
+                    // do nothing
+                    break;
+
+                case MEDIA_NOP: // interface test message - ignore
+                    break;
+
+                case MEDIA_SET_VIDEO_SAR:
+                    player.mVideoSarNum = msg.arg1;
+                    player.mVideoSarDen = msg.arg2;
+                    player.notifyOnVideoSizeChanged(player.mVideoWidth, player.mVideoHeight,
+                            player.mVideoSarNum, player.mVideoSarDen);
+                    break;
+
+                default:
+                    DebugLog.e(TAG, "Unknown message type " + msg.what);
             }
         }
     }
@@ -965,7 +965,7 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
      */
     @CalledByNative
     private static void postEventFromNative(Object weakThiz, int what,
-            int arg1, int arg2, Object obj) {
+                                            int arg1, int arg2, Object obj) {
         if (weakThiz == null)
             return;
 
@@ -1009,15 +1009,31 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
     }
 
     public interface OnNativeInvokeListener {
-        int ON_CONCAT_RESOLVE_SEGMENT = 0x10000;
-        int ON_TCP_OPEN = 0x10001;
-        int ON_HTTP_OPEN = 0x10002;
-        // int ON_HTTP_RETRY = 0x10003;
-        int ON_LIVE_RETRY = 0x10004;
+
+        int CTRL_WILL_TCP_OPEN = 0x20001;               // NO ARGS
+        int CTRL_DID_TCP_OPEN = 0x20002;                // ARG_ERROR, ARG_FAMILIY, ARG_IP, ARG_PORT, ARG_FD
+
+        int CTRL_WILL_HTTP_OPEN = 0x20003;              // ARG_URL, ARG_SEGMENT_INDEX, ARG_RETRY_COUNTER
+        int CTRL_WILL_LIVE_OPEN = 0x20005;              // ARG_URL, ARG_RETRY_COUNTER
+        int CTRL_WILL_CONCAT_RESOLVE_SEGMENT = 0x20007; // ARG_URL, ARG_SEGMENT_INDEX, ARG_RETRY_COUNTER
+
+        int EVENT_WILL_HTTP_OPEN = 0x1;                 // ARG_URL
+        int EVENT_DID_HTTP_OPEN = 0x2;                  // ARG_URL, ARG_ERROR, ARG_HTTP_CODE
+        int EVENT_WILL_HTTP_SEEK = 0x3;                 // ARG_URL, ARG_OFFSET
+        int EVENT_DID_HTTP_SEEK = 0x4;                  // ARG_URL, ARG_OFFSET, ARG_ERROR, ARG_HTTP_CODE
 
         String ARG_URL = "url";
         String ARG_SEGMENT_INDEX = "segment_index";
         String ARG_RETRY_COUNTER = "retry_counter";
+
+        String ARG_ERROR = "error";
+        String ARG_FAMILIY = "family";
+        String ARG_IP = "ip";
+        String ARG_PORT = "port";
+        String ARG_FD = "fd";
+
+        String ARG_OFFSET = "offset";
+        String ARG_HTTP_CODE = "http_code";
 
         /*
          * @return true if invoke is handled
@@ -1043,7 +1059,7 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
             return true;
 
         switch (what) {
-            case OnNativeInvokeListener.ON_CONCAT_RESOLVE_SEGMENT: {
+            case OnNativeInvokeListener.CTRL_WILL_CONCAT_RESOLVE_SEGMENT: {
                 OnControlMessageListener onControlMessageListener = player.mOnControlMessageListener;
                 if (onControlMessageListener == null)
                     return false;
