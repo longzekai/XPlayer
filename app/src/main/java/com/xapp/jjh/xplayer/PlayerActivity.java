@@ -7,12 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.jiajunhui.xapp.medialoader.loader.MediaLoader;
 import com.xapp.jjh.base_ijk.config.ViewType;
 import com.xapp.jjh.base_ijk.inter.OnErrorListener;
 import com.xapp.jjh.base_ijk.inter.OnPlayerEventListener;
 import com.xapp.jjh.base_ijk.widget.XPlayer;
 import com.xapp.jjh.xplayer.bean.PlayerMenu;
-import com.xapp.jjh.xplayer.utils.UriGetPath;
 import com.xapp.jjh.xui.activity.TopBarActivity;
 import com.xapp.jjh.xui.bean.BaseMenuItem;
 import com.xapp.jjh.xui.inter.MenuType;
@@ -32,8 +33,7 @@ public class PlayerActivity extends TopBarActivity implements OnErrorListener, O
         super.parseIntent();
         url = getIntent().getStringExtra("path");
         if(TextUtils.isEmpty(url)){
-            url = UriGetPath.getPath(getApplicationContext(),getIntent().getData());
-            setTopBarTitle(url);
+            url = MediaLoader.getPathFromUri(getApplicationContext(),getIntent().getData());
             Log.d(TAG,"url:" + url);
         }
     }
@@ -54,7 +54,13 @@ public class PlayerActivity extends TopBarActivity implements OnErrorListener, O
     @Override
     public void initData() {
         setSwipeBackEnable(false);
-        setTopBarTitle(getIntent().getStringExtra("name"));
+        if(TextUtils.isEmpty(url))
+            return;
+        String name = getIntent().getStringExtra("name");
+        if(TextUtils.isEmpty(name)){
+            name = getName(url);
+        }
+        setTopBarTitle(name);
         int decodeMode = getIntent().getIntExtra("decode_mode",0);
         /** 设置解码模式*/
         mXPlayer.setDecodeMode(new PlayerMenu().getDecodeMode(decodeMode));
@@ -71,6 +77,17 @@ public class PlayerActivity extends TopBarActivity implements OnErrorListener, O
         /** 启动播放*/
         mXPlayer.start();
         setMenuType(MenuType.TEXT,R.string.setting);
+    }
+
+    private String getName(String path){
+        if(TextUtils.isEmpty(path))
+            return "";
+        int len = path.length();
+        int index = path.lastIndexOf("/");
+        if(index==-1 || index>=len-1){
+            return path;
+        }
+        return path.substring(index+1,len);
     }
 
     @Override
