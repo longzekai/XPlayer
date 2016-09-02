@@ -14,7 +14,6 @@ import com.xapp.jjh.base_ijk.inter.OnPlayerEventListener;
 import com.xapp.jjh.base_ijk.inter.OnErrorListener;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
-import tv.danmaku.ijk.media.player.MediaPlayerProxy;
 
 /**
  * ------------------------------------
@@ -25,7 +24,6 @@ public class XPlayer extends BasePlayer{
 
     private final String TAG = "IjkVideoPlayer";
     protected IjkVideoView mVideoView;
-    private IjkMediaPlayer mMediaPlayer;
     private boolean hasLoadLibrary;
 
     private final int STATUS_IDLE = 0;
@@ -117,15 +115,6 @@ public class XPlayer extends BasePlayer{
     private void preparedMediaPlayer(IMediaPlayer mediaPlayer) {
         if (mediaPlayer == null)
             return;
-        if (mediaPlayer instanceof IjkMediaPlayer) {
-            mMediaPlayer = (IjkMediaPlayer) mediaPlayer;
-        } else if (mediaPlayer instanceof MediaPlayerProxy) {
-            MediaPlayerProxy proxy = (MediaPlayerProxy) mediaPlayer;
-            IMediaPlayer internal = proxy.getInternalMediaPlayer();
-            if (internal != null && internal instanceof IjkMediaPlayer){
-                mMediaPlayer = (IjkMediaPlayer) internal;
-            }
-        }
         mediaPlayer.setOnSeekCompleteListener(new IMediaPlayer.OnSeekCompleteListener() {
             @Override
             public void onSeekComplete(IMediaPlayer mp) {
