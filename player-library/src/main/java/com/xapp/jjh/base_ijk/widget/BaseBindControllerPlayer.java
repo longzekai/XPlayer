@@ -227,7 +227,6 @@ public abstract class BaseBindControllerPlayer extends BasePlayController implem
             resume();
             setPlayState(true);
         }
-        setPlayState(isPlaying());
         delayHiddenPlayControl();
     }
 

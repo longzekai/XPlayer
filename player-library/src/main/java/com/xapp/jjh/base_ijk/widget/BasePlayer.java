@@ -114,7 +114,6 @@ public abstract class BasePlayer extends BaseBindControllerPlayer {
 
             case OnPlayerEventListener.EVENT_CODE_BUFFERING_END:
                 setLoadingState(false);
-                setPlayState(true);
                 break;
 
             case OnPlayerEventListener.EVENT_CODE_SEEK_COMPLETE:
