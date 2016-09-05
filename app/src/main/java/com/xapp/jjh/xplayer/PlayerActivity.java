@@ -36,6 +36,7 @@ public class PlayerActivity extends TopBarActivity implements OnErrorListener, O
             url = MediaLoader.getPathFromUri(getApplicationContext(),getIntent().getData());
             Log.d(TAG,"url:" + url);
         }
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override
@@ -77,6 +78,12 @@ public class PlayerActivity extends TopBarActivity implements OnErrorListener, O
         /** 启动播放*/
         mXPlayer.start();
         setMenuType(MenuType.TEXT,R.string.setting);
+        mXPlayer.post(new Runnable() {
+            @Override
+            public void run() {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+            }
+        });
     }
 
     private String getName(String path){
