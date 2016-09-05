@@ -1,6 +1,8 @@
 XPlayer
 ====
 [Demo apk下载](http://fir.im/j2af)
+<br><br>
+[解码库下载](http://pan.baidu.com/share/link?shareid=799230074&uk=3356128450)
 use
 ====
 In this App,load phone storage all video files based on [MediaLoader](https://github.com/jiajunhui/MediaLoader)
