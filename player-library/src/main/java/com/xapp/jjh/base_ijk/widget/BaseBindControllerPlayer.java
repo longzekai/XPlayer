@@ -263,6 +263,7 @@ public abstract class BaseBindControllerPlayer extends BasePlayController implem
     protected void onSeekBarStartTrackingTouch(SeekBar seekBar) {
         super.onSeekBarStartTrackingTouch(seekBar);
         mHandler.removeMessages(MSG_DELAY_HIDDEN_PLAY_CONTROL);
+        mHandler.removeMessages(MSG_PLAYING);
     }
 
     @Override
@@ -271,6 +272,7 @@ public abstract class BaseBindControllerPlayer extends BasePlayController implem
         int progress = seekBar.getProgress();
         seekTo(progress);
         delayHiddenPlayControl();
+        mHandler.sendEmptyMessage(MSG_PLAYING);
     }
 
     @Override

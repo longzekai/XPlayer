@@ -1,5 +1,7 @@
 package com.xapp.jjh.base_ijk.inter;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by Taurus on 2016/8/29.
  */
@@ -21,6 +23,7 @@ public interface IController {
     void setSeekMax(int max);
     void setSeekProgress(int progress);
     void setSeekSecondProgress(int progress);
+    void setSeekThumb(Drawable drawable);
     void leftVerticalSlide(float percent);
     void rightVerticalSlide(float percent);
     void horizontalSlide(float percent);

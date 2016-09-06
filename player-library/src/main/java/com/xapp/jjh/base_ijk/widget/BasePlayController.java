@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -299,6 +300,11 @@ public abstract class BasePlayController extends FrameLayout implements IControl
     @Override
     public void setSeekSecondProgress(int progress) {
         mSeekBar.setSecondaryProgress(progress);
+    }
+
+    @Override
+    public void setSeekThumb(Drawable drawable){
+        mSeekBar.setThumb(drawable);
     }
 
     @Override
