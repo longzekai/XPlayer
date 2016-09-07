@@ -155,7 +155,8 @@ public class HomeActivity extends TopBarActivity implements VideoListAdapter.OnI
         List<PlayerMenu> menuList = new ArrayList<>();
         menuList.add(new PlayerMenu(PlayerMenu.DECODE_MODE_CODE_SOFT,-1,"软解码"));
         menuList.add(new PlayerMenu(PlayerMenu.DECODE_MODE_CODE_HARD,-1,"硬解码"));
-        menuList.add(new PlayerMenu(PlayerMenu.DECODE_MODE_CODE_MEDIA_PLAYER,-1,"原生解码"));
+        menuList.add(new PlayerMenu(PlayerMenu.DECODE_MODE_CODE_MEDIA_PLAYER,-1,"MediaPlayer"));
+        menuList.add(new PlayerMenu(PlayerMenu.DECODE_MODE_CODE_EXO_PLAYER,-1,"ExoPlayer"));
         menuList.add(new PlayerMenu(PlayerMenu.DECODE_MODE_NOT_SETTING,-1,ll_input.getVisibility()==View.VISIBLE?"隐藏输入框":"显示输入框"));
         showMenuList(menuList, new OnMenuItemClickListener() {
             @Override

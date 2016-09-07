@@ -15,6 +15,7 @@ public interface OnPlayerEventListener {
     int EVENT_CODE_PLAY_PAUSE = 20007;
     int EVENT_CODE_PLAY_RESUME = 20008;
     int EVENT_CODE_PLAYER_DESTROY = 20009;
+    int EVENT_CODE_VIDEO_ROTATION_CHANGED = 20010;
 
     void onPlayerEvent(int eventCode);
 }

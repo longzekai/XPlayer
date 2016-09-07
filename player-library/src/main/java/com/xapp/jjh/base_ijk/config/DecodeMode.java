@@ -6,5 +6,5 @@ package com.xapp.jjh.base_ijk.config;
  * ------------------------------------
  */
 public enum DecodeMode {
-    SOFT,MEDIAPLAYER,HARD
+    SOFT, MEDIA_PLAYER,EXO_PLAYER,HARD
 }

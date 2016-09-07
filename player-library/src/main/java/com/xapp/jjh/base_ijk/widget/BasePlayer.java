@@ -98,14 +98,9 @@ public abstract class BasePlayer extends BaseBindControllerPlayer {
                 break;
 
             case OnPlayerEventListener.EVENT_CODE_RENDER_START:
-                setSeekBarEnable(!(getDuration() <= 0));
-                sendPlayingMsg();
+                handleSome();
                 setLoadingState(false);
                 setPlayState(true);
-                if(startSeekPos > 0){
-                    seekTo(startSeekPos);
-                    startSeekPos = -1;
-                }
                 break;
 
             case OnPlayerEventListener.EVENT_CODE_BUFFERING_START:
@@ -131,6 +126,15 @@ public abstract class BasePlayer extends BaseBindControllerPlayer {
             case OnPlayerEventListener.EVENT_CODE_PLAY_RESUME:
                 setPlayState(true);
                 break;
+        }
+    }
+
+    private void handleSome() {
+        setSeekBarEnable(!(getDuration() <= 0));
+        sendPlayingMsg();
+        if(startSeekPos > 0){
+            seekTo(startSeekPos);
+            startSeekPos = -1;
         }
     }
 

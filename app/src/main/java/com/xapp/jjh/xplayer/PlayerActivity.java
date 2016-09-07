@@ -216,6 +216,10 @@ public class PlayerActivity extends TopBarActivity implements OnErrorListener, O
             case OnPlayerEventListener.EVENT_CODE_PLAYER_DESTROY:
                 Log.d(TAG,"EVENT_CODE_PLAYER_DESTROY");
                 break;
+
+            case OnPlayerEventListener.EVENT_CODE_VIDEO_ROTATION_CHANGED:
+                Log.d(TAG,"EVENT_CODE_VIDEO_ROTATION_CHANGED");
+                break;
         }
     }
 }

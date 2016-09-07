@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import com.xapp.jjh.base_ijk.config.DecodeMode;
+import com.xapp.jjh.base_ijk.config.Settings;
 import com.xapp.jjh.base_ijk.config.ViewType;
 import com.xapp.jjh.base_ijk.ijk.IjkVideoView;
 import com.xapp.jjh.base_ijk.inter.OnPlayerEventListener;
@@ -92,6 +93,10 @@ public class XPlayer extends BasePlayer{
                     case IMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
                         onPlayerEvent(OnPlayerEventListener.EVENT_CODE_RENDER_START);
                         break;
+
+                    case IMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
+                        onPlayerEvent(OnPlayerEventListener.EVENT_CODE_VIDEO_ROTATION_CHANGED);
+                        break;
                 }
                 return false;
             }
@@ -147,12 +152,14 @@ public class XPlayer extends BasePlayer{
 
     private void updateVideoViewDecodeMode() {
         if(mVideoView!=null){
-            if(getDecodeMode() == DecodeMode.MEDIAPLAYER){
-                mVideoView.setUsingAndroidPlayer(true);
+            if(getDecodeMode() == DecodeMode.MEDIA_PLAYER){
+                mVideoView.setPlayerType(Settings.PV_PLAYER__AndroidMediaPlayer);
+            }else if(getDecodeMode() == DecodeMode.EXO_PLAYER){
+                mVideoView.setPlayerType(Settings.PV_PLAYER__IjkExoMediaPlayer);
             }else if(getDecodeMode() == DecodeMode.SOFT){
-                mVideoView.setUsingAndroidPlayer(false);
+                mVideoView.setPlayerType(Settings.PV_PLAYER__IjkMediaPlayer);
             }else if(getDecodeMode() == DecodeMode.HARD){
-                mVideoView.setUsingAndroidPlayer(false);
+                mVideoView.setPlayerType(Settings.PV_PLAYER__IjkMediaPlayer);
                 mVideoView.setUsingMediaCodec(true);
             }
         }
@@ -171,7 +178,7 @@ public class XPlayer extends BasePlayer{
     }
 
     public void showTableLayout(){
-        if(getDecodeMode() == DecodeMode.MEDIAPLAYER)
+        if(getDecodeMode() == DecodeMode.MEDIA_PLAYER)
             return ;
         RelativeLayout relativeLayout = new RelativeLayout(getContext());
         relativeLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));

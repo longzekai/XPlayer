@@ -14,6 +14,7 @@ public class PlayerMenu extends BaseMenuItem {
     public static final int DECODE_MODE_CODE_SOFT = 0;
     public static final int DECODE_MODE_CODE_HARD = 1;
     public static final int DECODE_MODE_CODE_MEDIA_PLAYER = 2;
+    public static final int DECODE_MODE_CODE_EXO_PLAYER = 3;
 
     private int decodeModeCode;
 
@@ -43,7 +44,9 @@ public class PlayerMenu extends BaseMenuItem {
         }else if(decodeModeCode == DECODE_MODE_CODE_HARD){
             return DecodeMode.HARD;
         }else if(decodeModeCode == DECODE_MODE_CODE_MEDIA_PLAYER){
-            return DecodeMode.MEDIAPLAYER;
+            return DecodeMode.MEDIA_PLAYER;
+        }else if(decodeModeCode == DECODE_MODE_CODE_EXO_PLAYER){
+            return DecodeMode.EXO_PLAYER;
         }
         return DecodeMode.SOFT;
     }

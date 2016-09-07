@@ -39,6 +39,7 @@ import android.widget.TableLayout;
 
 import com.xapp.jjh.base_ijk.R;
 import com.xapp.jjh.base_ijk.config.Settings;
+import com.xapp.jjh.base_ijk.exo.IjkExoMediaPlayer;
 import com.xapp.jjh.base_ijk.service.MediaPlayerService;
 
 import java.io.File;
@@ -138,8 +139,11 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     }
 
     //****************************************************Taurus add code on 2016.08.02*****************************************************
-    public void setUsingAndroidPlayer(boolean usingAndroidPlayer) {
-        mSettings.setPlayerType(usingAndroidPlayer?Settings.PV_PLAYER__AndroidMediaPlayer:Settings.PV_PLAYER__IjkMediaPlayer);
+    public void setPlayerType(int playerType) {
+        if(playerType!=Settings.PV_PLAYER__AndroidMediaPlayer && playerType!=Settings.PV_PLAYER__IjkExoMediaPlayer && playerType!=Settings.PV_PLAYER__IjkMediaPlayer){
+            playerType = Settings.PV_PLAYER__IjkMediaPlayer;
+        }
+        mSettings.setPlayerType(playerType);
     }
 
     public void setUsingMediaCodec(boolean usingMediaCodec) {
@@ -1002,11 +1006,11 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
         IMediaPlayer mediaPlayer = null;
 
         switch (playerType) {
-//            case Settings.PV_PLAYER__IjkExoMediaPlayer: {
-//                IjkExoMediaPlayer IjkExoMediaPlayer = new IjkExoMediaPlayer(mAppContext);
-//                mediaPlayer = IjkExoMediaPlayer;
-//            }
-//            break;
+            case Settings.PV_PLAYER__IjkExoMediaPlayer: {
+                IjkExoMediaPlayer IjkExoMediaPlayer = new IjkExoMediaPlayer(mAppContext);
+                mediaPlayer = IjkExoMediaPlayer;
+            }
+            break;
             case Settings.PV_PLAYER__AndroidMediaPlayer: {
                 AndroidMediaPlayer androidMediaPlayer = new AndroidMediaPlayer();
                 mediaPlayer = androidMediaPlayer;
