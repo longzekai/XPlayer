@@ -15,23 +15,20 @@
  */
 package com.xapp.jjh.base_ijk.exo.demo;
 
-import com.google.android.exoplayer.drm.ExoMediaDrm;
+import android.annotation.TargetApi;
+import android.text.TextUtils;
+import com.google.android.exoplayer.drm.ExoMediaDrm.KeyRequest;
+import com.google.android.exoplayer.drm.ExoMediaDrm.ProvisionRequest;
 import com.google.android.exoplayer.drm.MediaDrmCallback;
 import com.google.android.exoplayer.drm.StreamingDrmSessionManager;
 import com.google.android.exoplayer.util.Util;
-
-import android.annotation.TargetApi;
-import android.media.MediaDrm.KeyRequest;
-import android.media.MediaDrm.ProvisionRequest;
-import android.text.TextUtils;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 /**
- * Demo {link StreamingDrmSessionManager} for smooth streaming test content.
+ * Demo {@link StreamingDrmSessionManager} for smooth streaming test content.
  */
 @TargetApi(18)
 public class SmoothStreamingTestMediaDrmCallback implements MediaDrmCallback {
@@ -48,17 +45,18 @@ public class SmoothStreamingTestMediaDrmCallback implements MediaDrmCallback {
   }
 
   @Override
-  public byte[] executeProvisionRequest(UUID uuid, ExoMediaDrm.ProvisionRequest provisionRequest) throws Exception {
-    String url = provisionRequest.getDefaultUrl() + "&signedRequest=" + new String(provisionRequest.getData());
+  public byte[] executeProvisionRequest(UUID uuid, ProvisionRequest request) throws IOException {
+    String url = request.getDefaultUrl() + "&signedRequest=" + new String(request.getData());
     return Util.executePost(url, null, null);
   }
 
   @Override
-  public byte[] executeKeyRequest(UUID uuid, ExoMediaDrm.KeyRequest keyRequest) throws Exception {
-    String url = keyRequest.getDefaultUrl();
+  public byte[] executeKeyRequest(UUID uuid, KeyRequest request) throws Exception {
+    String url = request.getDefaultUrl();
     if (TextUtils.isEmpty(url)) {
       url = PLAYREADY_TEST_DEFAULT_URI;
     }
-    return Util.executePost(url, keyRequest.getData(), KEY_REQUEST_PROPERTIES);
+    return Util.executePost(url, request.getData(), KEY_REQUEST_PROPERTIES);
   }
+
 }

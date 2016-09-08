@@ -15,6 +15,10 @@
  */
 package com.xapp.jjh.base_ijk.exo.demo.player;
 
+import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaCodec;
+import android.os.Handler;
 import com.google.android.exoplayer.DefaultLoadControl;
 import com.google.android.exoplayer.LoadControl;
 import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
@@ -26,6 +30,7 @@ import com.google.android.exoplayer.chunk.ChunkSampleSource;
 import com.google.android.exoplayer.chunk.ChunkSource;
 import com.google.android.exoplayer.chunk.FormatEvaluator.AdaptiveEvaluator;
 import com.google.android.exoplayer.drm.DrmSessionManager;
+import com.google.android.exoplayer.drm.FrameworkMediaCrypto;
 import com.google.android.exoplayer.drm.MediaDrmCallback;
 import com.google.android.exoplayer.drm.StreamingDrmSessionManager;
 import com.google.android.exoplayer.drm.UnsupportedDrmException;
@@ -41,16 +46,10 @@ import com.google.android.exoplayer.upstream.DefaultHttpDataSource;
 import com.google.android.exoplayer.upstream.DefaultUriDataSource;
 import com.google.android.exoplayer.util.ManifestFetcher;
 import com.google.android.exoplayer.util.Util;
-
-import android.content.Context;
-import android.media.AudioManager;
-import android.media.MediaCodec;
-import android.os.Handler;
-
 import java.io.IOException;
 
 /**
- * A {link RendererBuilder} for SmoothStreaming.
+ * A {@link RendererBuilder} for SmoothStreaming.
  */
 public class SmoothStreamingRendererBuilder implements DemoPlayer.RendererBuilder {
 
@@ -139,7 +138,7 @@ public class SmoothStreamingRendererBuilder implements DemoPlayer.RendererBuilde
       DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter(mainHandler, player);
 
       // Check drm support if necessary.
-      DrmSessionManager drmSessionManager = null;
+      DrmSessionManager<FrameworkMediaCrypto> drmSessionManager = null;
       if (manifest.protectionElement != null) {
         if (Util.SDK_INT < 18) {
           player.onRenderersError(
@@ -147,8 +146,9 @@ public class SmoothStreamingRendererBuilder implements DemoPlayer.RendererBuilde
           return;
         }
         try {
-          drmSessionManager = StreamingDrmSessionManager.newFrameworkInstance(manifest.protectionElement.uuid,
-              player.getPlaybackLooper(), drmCallback, null, player.getMainHandler(), player);
+          drmSessionManager = StreamingDrmSessionManager.newFrameworkInstance(
+              manifest.protectionElement.uuid, player.getPlaybackLooper(), drmCallback, null,
+              player.getMainHandler(), player);
         } catch (UnsupportedDrmException e) {
           player.onRenderersError(e);
           return;

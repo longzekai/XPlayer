@@ -15,6 +15,10 @@
  */
 package com.xapp.jjh.base_ijk.exo.demo.player;
 
+import android.media.MediaCodec.CryptoException;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.Surface;
 import com.google.android.exoplayer.CodecCounters;
 import com.google.android.exoplayer.DummyTrackRenderer;
 import com.google.android.exoplayer.ExoPlaybackException;
@@ -42,20 +46,14 @@ import com.google.android.exoplayer.upstream.BandwidthMeter;
 import com.google.android.exoplayer.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer.util.DebugTextViewHelper;
 import com.google.android.exoplayer.util.PlayerControl;
-
-import android.media.MediaCodec.CryptoException;
-import android.os.Handler;
-import android.os.Looper;
-import android.view.Surface;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * A wrapper around {link ExoPlayer} that provides a higher level interface. It can be prepared
- * with one of a number of {link RendererBuilder} classes to suit different use cases (e.g. DASH,
+ * A wrapper around {@link ExoPlayer} that provides a higher level interface. It can be prepared
+ * with one of a number of {@link RendererBuilder} classes to suit different use cases (e.g. DASH,
  * SmoothStreaming and so on).
  */
 public class DemoPlayer implements ExoPlayer.Listener, ChunkSampleSource.EventListener,
@@ -72,16 +70,16 @@ public class DemoPlayer implements ExoPlayer.Listener, ChunkSampleSource.EventLi
     /**
      * Builds renderers for playback.
      *
-     * @param player The player for which renderers are being built. {link DemoPlayer#onRenderers}
+     * @param player The player for which renderers are being built. {@link DemoPlayer#onRenderers}
      *     should be invoked once the renderers have been built. If building fails,
-     *     {link DemoPlayer#onRenderersError} should be invoked.
+     *     {@link DemoPlayer#onRenderersError} should be invoked.
      */
     void buildRenderers(DemoPlayer player);
     /**
      * Cancels the current build operation, if there is one. Else does nothing.
      * <p>
-     * A canceled build operation must not invoke {link DemoPlayer#onRenderers} or
-     * {link DemoPlayer#onRenderersError} on the player, which may have been released.
+     * A canceled build operation must not invoke {@link DemoPlayer#onRenderers} or
+     * {@link DemoPlayer#onRenderersError} on the player, which may have been released.
      */
     void cancel();
   }
@@ -101,7 +99,7 @@ public class DemoPlayer implements ExoPlayer.Listener, ChunkSampleSource.EventLi
    * <p>
    * These errors are not visible to the user, and hence this listener is provided for
    * informational purposes only. Note however that an internal error may cause a fatal
-   * error if the player fails to recover. If this happens, {link Listener#onError(Exception)}
+   * error if the player fails to recover. If this happens, {@link Listener#onError(Exception)}
    * will be invoked.
    */
   public interface InternalErrorListener {
@@ -294,9 +292,9 @@ public class DemoPlayer implements ExoPlayer.Listener, ChunkSampleSource.EventLi
   }
 
   /**
-   * Invoked with the results from a {link RendererBuilder}.
+   * Invoked with the results from a {@link RendererBuilder}.
    *
-   * @param renderers Renderers indexed by {link DemoPlayer} TYPE_* constants. An individual
+   * @param renderers Renderers indexed by {@link DemoPlayer} TYPE_* constants. An individual
    *     element may be null if there do not exist tracks of the corresponding type.
    * @param bandwidthMeter Provides an estimate of the currently available bandwidth. May be null.
    */
@@ -320,7 +318,7 @@ public class DemoPlayer implements ExoPlayer.Listener, ChunkSampleSource.EventLi
   }
 
   /**
-   * Invoked if a {link RendererBuilder} encounters an error.
+   * Invoked if a {@link RendererBuilder} encounters an error.
    *
    * @param e Describes the error.
    */

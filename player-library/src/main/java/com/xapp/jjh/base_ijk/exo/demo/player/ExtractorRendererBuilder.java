@@ -15,11 +15,17 @@
  */
 package com.xapp.jjh.base_ijk.exo.demo.player;
 
+import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaCodec;
+import android.net.Uri;
+import android.os.Handler;
 import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
 import com.google.android.exoplayer.MediaCodecSelector;
 import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
 import com.google.android.exoplayer.TrackRenderer;
 import com.google.android.exoplayer.audio.AudioCapabilities;
+import com.google.android.exoplayer.extractor.Extractor;
 import com.google.android.exoplayer.extractor.ExtractorSampleSource;
 import com.google.android.exoplayer.text.TextTrackRenderer;
 import com.google.android.exoplayer.upstream.Allocator;
@@ -28,14 +34,8 @@ import com.google.android.exoplayer.upstream.DefaultAllocator;
 import com.google.android.exoplayer.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer.upstream.DefaultUriDataSource;
 
-import android.content.Context;
-import android.media.AudioManager;
-import android.media.MediaCodec;
-import android.net.Uri;
-import android.os.Handler;
-
 /**
- * A {link RendererBuilder} for streams that can be read using an {link Extractor}.
+ * A {@link RendererBuilder} for streams that can be read using an {@link Extractor}.
  */
 public class ExtractorRendererBuilder implements DemoPlayer.RendererBuilder {
 
